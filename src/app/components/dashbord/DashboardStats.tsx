@@ -19,7 +19,9 @@ const StatCard = ({ icon, label, value }: { icon: React.ReactNode, label: string
 export const DashboardStats = ({ credentials }: DashboardStatsProps) => {
   const stats = useMemo(() => {
     const total = credentials.length;
-    const verified = credentials.filter(c => c.verified).length;
+    
+    // FIX: Changed 'c.verified' to check for the correct status
+    const verified = credentials.filter(c => c.status === 'Verified').length;
     
     const skillCounts = credentials
       .flatMap(c => c.skills)
