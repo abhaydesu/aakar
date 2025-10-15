@@ -1,147 +1,146 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { motion, Variants, Easing } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
-/**
- * Use a properly typed Easing value instead of casting to `any`.
- * Framer Motion accepts a numeric cubic-bezier array at runtime and Easing
- * is the correct type to represent that to TypeScript.
- */
-const customEase: Easing = [0.22, 1, 0.36, 1];
-
-const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: customEase,
-      staggerChildren: 0.1,
-      when: 'beforeChildren',
-    },
-  },
-};
+const TEAM = [
+  { name: "Kushagra Shukla", github: "https://github.com/kushu30" },
+  { name: "Abhay Singh", github: "https://github.com/abhaydesu" },
+  { name: "Angelica Singh",  github: "https://github.com/angelica-singh-04" },
+  { name: "Aditya", github: "https://github.com/" },
+  { name: "Abhimanyu Dutta", github: "https://github.com/Caravaleer" },
+  { name: "Prajakta Naik", github: "https://github.com/" },
+];
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: '', email: '', message: '' });
-  };
-
   return (
-    <div className="min-h-screen bg-[#f9f0eb] text-neutral-900 inter relative overflow-x-hidden">
-      <motion.div
-        className="pointer-events-none absolute inset-0 w-full"
-        style={{
-          maskImage: "radial-gradient(ellipse at top, black 20%, transparent 70%)",
-          WebkitMaskImage: "radial-gradient(ellipse at top, black 20%, transparent 70%)",
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, ease: 'easeOut' }}
-      />
+    <div className="bg-[#f9f0eb] text-neutral-900 min-h-screen py-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-white/10">
+              <h2 className="text-2xl font-extrabold mb-2">Meet the team</h2>
+              <p className="text-sm text-neutral-600 mb-6">
+                HEXADECIMAL — the minds building Aakar.
+              </p>
 
-      <div className="relative z-10">
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
-          <motion.h2
-            className="text-center text-4xl md:text-6xl font-extrabold tracking-tight mb-4"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
+              <div className="grid grid-cols-1 gap-4">
+                <TeamGrid members={TEAM} />
+              </div>
+            </div>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-2 bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-white/10"
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
-              Contact Us
-            </span>{' '}
-          </motion.h2>
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3">
+              Get in touch
+            </h1>
+            <p className="text-neutral-700 mb-8 max-w-2xl">
+              Questions, partnership ideas, or policy discussions — we want to hear them all.
+              Fill out the form and we&apos;ll get back to you within 3 business days.
+            </p>
 
-          <motion.p
-            className="text-center text-neutral-600 max-w-2xl mx-auto mb-10"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-          >
-            Have a question, partnership inquiry, or feedback? Fill out the form below and we’ll get back to you soon.
-          </motion.p>
-
-          <motion.form
-            onSubmit={handleSubmit}
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            className="relative bg-white rounded-sm border border-transparent shadow-md p-8"
-            aria-label="Contact form"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">Name</label>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Thanks! form handler not yet implemented.");
+              }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-neutral-700">Your name</span>
                 <input
-                  type="text"
                   name="name"
+                  type="text"
                   required
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Anon Sharma"
-                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition"
+                  className="bg-[#f3efe8] border border-neutral-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-300"
                 />
-              </div>
+              </label>
 
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">Email</label>
+              <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-neutral-700">Email</span>
                 <input
-                  type="email"
                   name="email"
+                  type="email"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="anon@works.com"
-                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition"
+                  className="bg-[#f3efe8] border border-neutral-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-300"
                 />
+              </label>
+
+              <label className="md:col-span-2 flex flex-col gap-2">
+                <span className="text-sm font-medium text-neutral-700">Subject</span>
+                <input
+                  name="subject"
+                  type="text"
+                  placeholder="Collaboration / Support / Partnership"
+                  className="bg-[#f3efe8] border border-neutral-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-300"
+                />
+              </label>
+
+              <label className="md:col-span-2 flex flex-col gap-2">
+                <span className="text-sm font-medium text-neutral-700">Message</span>
+                <textarea
+                  name="message"
+                  rows={6}
+                  required
+                  className="bg-[#f3efe8] border border-neutral-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-300 resize-none"
+                />
+              </label>
+
+              <div className="md:col-span-2 flex items-center justify-between gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 text-white font-semibold px-6 py-3 shadow hover:scale-[1.01] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                >
+                  Send message
+                </motion.button>
               </div>
-            </div>
-
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-neutral-700 mb-2">Message</label>
-              <textarea
-                name="message"
-                rows={5}
-                required
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Send us a message..."
-                className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition resize-none"
-              />
-            </div>
-
-            <div className="mt-8 text-center">
-              <button className="bg-green-800 w-full py-3 rounded-sm" type="submit" aria-label="Send message">
-                {submitted ? 'Message Sent!' : 'Send Message'}
-              </button>
-            </div>
-          </motion.form>
-        </main>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        />
+            </form>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
+}
+
+/* ----------------------------- TeamGrid & helpers ----------------------------- */
+
+function TeamGrid({ members }: { members: { name: string; github: string }[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {members.map((m, i) => (
+        <motion.button
+          key={m.name}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full text-left flex items-center gap-3 bg-[#f9f0eb] border border-neutral-200 rounded-lg p-3 hover:shadow-sm focus:outline-none"
+          // TODO: replace with Link to profile or social URLs when available
+          onClick={() => {}}
+          aria-label={`Open profile for ${m.name}`}
+        >
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-600 to-green-800 text-neutral-900 font-bold flex items-center justify-center text-lg">
+            {initials(m.name)}
+          </div>
+
+          <div className="flex-1">
+            <Link href={m.github} >
+            <div className="text-sm font-semibold">{m.name}</div>
+            </Link>
+          </div>
+        </motion.button>
+      ))}
+    </div>
+  );
+}
+
+function initials(name: string) {
+  const parts = name.split(" ");
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
 }

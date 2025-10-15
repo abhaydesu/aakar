@@ -133,7 +133,7 @@ export const CredentialCard = ({
               href={credential.filePath}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-blue-600 hover:underline"
+              className="inline-flex items-center text-sm text-green-600 hover:underline"
               aria-label={`View certificate for ${credential.title}`}
             >
               View certificate <FiExternalLink className="ml-2" />

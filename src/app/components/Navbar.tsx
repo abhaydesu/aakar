@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { title: 'Dashboard', href: '/dashboard' },
   { title: 'Contact', href: '/contact' },
-  { title: 'About us', href: '/about-us' },
+  { title: 'About us', href: '/about' },
 ];
 
 export const Navbar = () => {
@@ -21,7 +21,7 @@ export const Navbar = () => {
         {/* Logo / Title */}
         <div className="text-6xl tracking-tight hover:tracking-wide transition-all duration-300 font-medium gajraj-one-regular">
           <Link className="flex flex-row items-center" href="/">
-            <Image src="/logo.jpg" width={50} height={50} alt="logo" />
+            <Image src="/logo2.png" width={50} height={50} alt="logo" />
             <span className="pl-5">Aakar</span>
           </Link>
         </div>
@@ -37,7 +37,7 @@ export const Navbar = () => {
                 className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300
                   ${
                     isActive
-                      ? "bg-neutral-900 text-neutral-200 border-neutral-900"
+                      ? "bg-neutral-200 text-green-900 border-neutral-200"
                       : "border-transparent hover:border-neutral-200"
                   }`}
               >
