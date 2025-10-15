@@ -96,7 +96,7 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Anon Sharma"
-                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200 transition"
+                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition"
                 />
               </div>
 
@@ -109,7 +109,7 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="anon@works.com"
-                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200 transition"
+                  className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition"
                 />
               </div>
             </div>
@@ -123,12 +123,12 @@ export default function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Send us a message..."
-                className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200 transition resize-none"
+                className="w-full px-4 py-3 rounded-sm bg-neutral-50 border border-neutral-200 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800 transition resize-none"
               />
             </div>
 
             <div className="mt-8 text-center">
-              <button className="bg-green-200 w-full py-3 rounded-sm" type="submit" aria-label="Send message">
+              <button className="bg-green-800 w-full py-3 rounded-sm" type="submit" aria-label="Send message">
                 {submitted ? 'Message Sent!' : 'Send Message'}
               </button>
             </div>

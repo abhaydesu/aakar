@@ -3,16 +3,16 @@ import Link from "next/link";
 
 export const Hero = () => {
   return (
-    <div className="relative grid md:grid-cols-5 bg-[#f9f0eb]">
+    <div className="bg-[#f9f0eb] min-h-screen md:min-h-[640px] grid md:grid-cols-5 items-center">
      
 
-      <div className="col-span-2 tracking-tight font-medium flex flex-col items-center">
+      <div className="col-span-2 tracking-tight font-medium flex flex-col items-center ">
         <h1 className="text-center pt-40 pb-6 md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[0.92] text-neutral-900">
           <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
             Your skills,
           </span>
           <br />
-          <span className="inline-block text-green-300 drop-shadow-[1px_1px_0_#0a0a0a]">
+          <span className="inline-block text-green-800 drop-shadow-[1px_1px_0_#0a0a0a]">
             unified.
           </span>
         </h1>
@@ -38,12 +38,12 @@ export const Hero = () => {
             </Link>
 
             <button
-              className="relative cursor-pointer py-4 px-6 rounded-sm bg-green-200 text-neutral-900 font-medium
+              className="relative cursor-pointer py-4 px-6 rounded-sm bg-green-800 text-neutral-900 font-medium
                          border-4 border-transparent transition-colors duration-180 transform-gpu will-change-transform
-                         hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+                         hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-800"
               aria-label="Watch demo"
             >
-              <span className="relative z-10">Watch Demo</span>
+              <span className="relative z-10 text-neutral-100">Watch Demo</span>
             </button>
           </div>
 
@@ -63,7 +63,7 @@ export const Hero = () => {
 
         <div className="absolute bottom-6 left-8 md:left-12 bg-white rounded-xl p-3 shadow-md w-60">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-md bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center font-bold text-neutral-900">
+            <div className="w-9 h-9 rounded-md bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center font-bold text-neutral-900">
               C
             </div>
             <div>

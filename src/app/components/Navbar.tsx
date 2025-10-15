@@ -1,40 +1,50 @@
+'use client';
+
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const navItems = [
-  {title:'Dashboard', href:'/dashboard'},
-  {title:'Contact', href:'/contact'},
-  {title:'About us', href:'/about-us'},
+  { title: 'Dashboard', href: '/dashboard' },
+  { title: 'Contact', href: '/contact' },
+  { title: 'About us', href: '/about-us' },
 ];
 
 export const Navbar = () => {
+  const pathname = usePathname();
+
   return (
-    <nav className="bg-green-200 py-2">
-      <div className="flex font-medium text-neutral-900 justify-between items-center px-8 mx-auto">
+    <nav className="bg-green-800 py-2 sticky top-0 z-50 shadow-sm">
+      <div className="flex font-medium text-neutral-200 justify-between items-center px-8 mx-auto">
+        
+        {/* Logo / Title */}
         <div className="text-6xl tracking-tight hover:tracking-wide transition-all duration-300 font-medium gajraj-one-regular">
-        <Link className=" flex flex-row items-center" href="/">
-            <span>
-                <Image src="/logo.jpg" width={50} height={50} alt="logo" />
-            </span>
-            <span className="pl-5" >
-                
-            aakar
-            
-        </span>
-        </Link>
-        {/* <span className="text-4xl tracking-tight font-medium yatra-one-regular"> aakar</span> */}
+          <Link className="flex flex-row items-center" href="/">
+            <Image src="/logo.jpg" width={50} height={50} alt="logo" />
+            <span className="pl-5">Aakar</span>
+          </Link>
         </div>
-        <div className="flex flex-row gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-xl relative py-1 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-neutral-900 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              {item.title}
-            </Link>
-          ))}
+
+        {/* Navigation Items */}
+        <div className="flex flex-row gap-4 sm:gap-8">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300
+                  ${
+                    isActive
+                      ? "bg-neutral-900 text-neutral-200 border-neutral-900"
+                      : "border-transparent hover:border-neutral-200"
+                  }`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </nav>

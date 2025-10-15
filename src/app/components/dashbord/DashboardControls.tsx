@@ -34,9 +34,9 @@ export const DashboardControls = ({
 
           <button
             onClick={onGroupToggle}
-            className="py-2.5 px-4 rounded-sm bg-neutral-300 text-neutral-900 font-medium
+            className="py-2.5 px-4 rounded-sm bg-green-800 text-neutral-100 font-medium
                        border-4 border-transparent transition-colors duration-150 transform-gpu will-change-transform
-                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-800 cursor-pointer"
             aria-pressed={isGrouped}
           >
             {isGrouped ? 'Show All' : 'Group Duplicates'}
@@ -52,7 +52,7 @@ export const DashboardControls = ({
             placeholder="Search by skill, title, issuer..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-3 pl-10 pr-4 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+            className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-3 pl-10 pr-4 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800"
             aria-label="Search credentials"
           />
         </div>
@@ -61,7 +61,7 @@ export const DashboardControls = ({
         <div className="flex gap-2">
           <button
             onClick={() => onSearchChange('')}
-            className="px-3 py-2 rounded-md bg-neutral-100 text-neutral-900 border border-neutral-200 hover:brightness-95"
+            className="px-3 py-2 rounded-md bg-neutral-100 text-neutral-900 border border-neutral-200 hover:bg-green-100 cursor-pointer"
             title="Clear search"
           >
             Clear

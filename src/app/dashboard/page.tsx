@@ -156,15 +156,7 @@ return (
             <span className="relative z-10">Add credential</span>
           </button>
 
-          <button
-            className="relative cursor-pointer py-3 px-5 rounded-sm bg-green-200 text-neutral-900 font-medium
-                       border-4 border-transparent transition-colors duration-180 transform-gpu will-change-transform
-                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
-            aria-label="Export"
-            onClick={() => {/* optional export handler */}}
-          >
-            <span className="relative z-10">Export</span>
-          </button>
+          
         </div>
       </div>
 

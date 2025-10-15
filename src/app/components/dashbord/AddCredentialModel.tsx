@@ -26,7 +26,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
               Add New
             </span>{' '}
-            <span className="text-green-300">Credential</span>
+            <span className="text-green-800">Credential</span>
           </h2>
           <p className="text-sm text-neutral-600 mt-1">Upload your certificate and fill the details below.</p>
         </header>
@@ -39,7 +39,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
               name="title"
               type="text"
               placeholder="e.g. Introduction to Machine Learning"
-              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800"
             />
 
             <label className="text-sm text-neutral-700">Issuing organization</label>
@@ -48,7 +48,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
               name="issuer"
               type="text"
               placeholder="e.g. Coursera"
-              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800"
             />
 
             <label className="text-sm text-neutral-700">Date</label>
@@ -56,7 +56,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
               required
               name="date"
               type="date"
-              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800"
             />
 
             <label className="text-sm text-neutral-700">Skills (comma-separated)</label>
@@ -65,7 +65,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
               name="skills"
               type="text"
               placeholder="e.g. Python, Machine Learning, SQL"
-              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+              className="w-full bg-neutral-100 border border-neutral-200 rounded-sm  p-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-800"
             />
           </div>
 
@@ -80,7 +80,7 @@ export const AddCredentialModal = ({ onClose, onAddCredential }: AddCredentialMo
               type="file"
               accept=".pdf,.png,.jpg,.jpeg"
               className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-sm  file:border-0 file:text-sm file:font-semibold
-                         file:bg-green-200 file:text-neutral-900 hover:file:bg-green-300"
+                         file:bg-green-800 file:text-neutral-900 hover:file:bg-green-800"
             />
             <p className="text-xs text-neutral-500 mt-1">Accepted: PDF, PNG, JPG — max 10MB</p>
           </div>
