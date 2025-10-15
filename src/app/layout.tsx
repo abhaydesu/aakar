@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast"; // 1. Import Toaster
+import { Navbar } from "./components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Credential Aggregator",
+  title: "Aakar",
   description: "Your unified skill portfolio.",
 };
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <Navbar />
         {children}
         <Toaster // 2. Add the component here
           position="bottom-right"

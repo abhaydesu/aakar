@@ -3,8 +3,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Credential as CredentialType, CredentialStatus } from '@/types';
 import toast from 'react-hot-toast';
-
-// FIX: Corrected typo in all import paths ('dashboard' instead of 'dashbord') and used absolute paths
 import { AddCredentialModal } from '../components/dashbord/AddCredentialModel';
 import { CredentialCard } from '../components/dashbord/CredentialCard';
 import { DashboardControls } from '../components/dashbord/DashboardControls';
@@ -23,7 +21,6 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [credentialToDelete, setCredentialToDelete] = useState<CredentialType | null>(null);
 
-  // FIX: Added the missing useEffect to fetch initial data
   useEffect(() => {
     const fetchCredentials = async () => {
       setIsLoading(true);
@@ -117,18 +114,62 @@ export default function DashboardPage() {
     return Array.from(uniqueCredentials.values());
   }, [isGrouped, searchQuery, credentials]);
   
-  return (
-    <main className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-8">
-      {showModal && <AddCredentialModal onClose={() => setShowModal(false)} onAddCredential={handleAddCredential} />}
-      
-      {/* FIX: Added the missing delete confirmation modal */}
-      <ConfirmDeleteModal 
-        credential={credentialToDelete}
-        onClose={() => setCredentialToDelete(null)}
-        onConfirm={confirmDelete}
+return (
+  <main className="min-h-screen bg-[#f9f0eb] text-neutral-900 p-4 sm:p-6 md:p-8">
+    {/* Modals */}
+    {showModal && (
+      <AddCredentialModal
+        onClose={() => setShowModal(false)}
+        onAddCredential={handleAddCredential}
       />
-      
-      <div className="max-w-7xl mx-auto">
+    )}
+
+    <ConfirmDeleteModal
+      credential={credentialToDelete}
+      onClose={() => setCredentialToDelete(null)}
+      onConfirm={confirmDelete}
+    />
+
+    <div className="max-w-7xl mx-auto">
+      {/* Top summary / quick actions — matches Hero style */}
+      <div className="mt-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex-1">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
+              My Credentials
+            </span>
+          </h2>
+          <p className="mt-2 text-sm text-neutral-600 max-w-xl">
+            Aggregated and verified micro-credentials from all your platforms — curated in one portfolio.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowModal(true)}
+            className="relative cursor-pointer py-3 px-5 rounded-sm bg-neutral-900 text-[#f9f0eb] font-semibold
+                       border-4 border-transparent transition-all duration-180 transform-gpu will-change-transform
+                       hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+            aria-label="Add credential"
+          >
+            <span className="absolute inset-0 rounded-xl pointer-events-none" />
+            <span className="relative z-10">Add credential</span>
+          </button>
+
+          <button
+            className="relative cursor-pointer py-3 px-5 rounded-sm bg-green-200 text-neutral-900 font-medium
+                       border-4 border-transparent transition-colors duration-180 transform-gpu will-change-transform
+                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+            aria-label="Export"
+            onClick={() => {/* optional export handler */}}
+          >
+            <span className="relative z-10">Export</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Controls (search / grouping) — visually separated */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-md border border-transparent">
         <DashboardControls
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -136,28 +177,46 @@ export default function DashboardPage() {
           onGroupToggle={() => setIsGrouped(!isGrouped)}
           onAddClick={() => setShowModal(true)}
         />
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {Array(3).fill(0).map((_, index) => <SkeletonCard key={index} />)}
+      </div>
+
+      {/* Content area */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {Array(3).fill(0).map((_, index) => (
+            <div key={index} className="bg-white rounded-2xl p-4 shadow-md animate-pulse min-h-[12rem]" />
+          ))}
+        </div>
+      ) : credentials.length === 0 ? (
+        <div className="mt-16 flex justify-center">
+          <div className="w-full max-w-2xl bg-white rounded-2xl p-8 shadow-md text-center">
+            <EmptyState onAddClick={() => setShowModal(true)} />
           </div>
-        ) : credentials.length === 0 ? (
-          <div className="mt-16"><EmptyState onAddClick={() => setShowModal(true)} /></div>
-        ) : (
-          <>
+        </div>
+      ) : (
+        <>
+          {/* stats card area */}
+          <div className="mt-8">
             <DashboardStats credentials={credentials} />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedCredentials.map((credential) => (
-                <CredentialCard 
-                  key={credential.id} 
-                  credential={credential} 
-                  // FIX: Pass the entire credential object to the delete handler to open the modal
+          </div>
+
+          {/* grid of credential cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {displayedCredentials.map((credential) => (
+              <div
+                key={credential.id}
+                className="bg-white rounded-2xl p-4 shadow-md border border-transparent hover:shadow-lg transition-shadow"
+              >
+                {/* keep using your existing CredentialCard but wrap for consistent card styling */}
+                <CredentialCard
+                  credential={credential}
                   onDelete={setCredentialToDelete}
                 />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </main>
-  );
-}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </main>
+)
+};
