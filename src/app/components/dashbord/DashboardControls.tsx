@@ -17,37 +17,56 @@ export const DashboardControls = ({
 }: DashboardControlsProps) => {
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-6">
         <div>
-          <h1 className="text-4xl font-bold">My Skill Portfolio</h1>
-          <p className="text-gray-400 mt-1">A unified view of all your micro-credentials.</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-neutral-900">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
+              My Skill Portfolio
+            </span>
+          </h1>
+          <p className="text-sm text-neutral-600 mt-1">
+            A unified view of all your micro-credentials.
+          </p>
         </div>
-        <div className="flex space-x-2 mt-4 sm:mt-0">
+
+        <div className="flex items-center gap-3">
+        
+
           <button
-            onClick={onAddClick}
-            className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg flex items-center transition-colors"
+            onClick={onGroupToggle}
+            className="py-2.5 px-4 rounded-sm bg-neutral-300 text-neutral-900 font-medium
+                       border-4 border-transparent transition-colors duration-150 transform-gpu will-change-transform
+                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+            aria-pressed={isGrouped}
           >
-            <FiPlus className="mr-2" /> Add
+            {isGrouped ? 'Show All' : 'Group Duplicates'}
           </button>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        <div className="relative flex-grow">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-transparent flex flex-col sm:flex-row gap-4 items-center">
+        <div className="relative flex-grow w-full">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
             placeholder="Search by skill, title, issuer..."
             value={searchQuery}
-            onChange={e => onSearchChange(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-3 pl-10 pr-4 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-green-200"
+            aria-label="Search credentials"
           />
         </div>
-        <button
-          onClick={onGroupToggle}
-          className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
-        >
-          {isGrouped ? 'Show All' : 'Group Duplicates'}
-        </button>
+
+        {/* Optional quick filters area (kept minimal) */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => onSearchChange('')}
+            className="px-3 py-2 rounded-md bg-neutral-100 text-neutral-900 border border-neutral-200 hover:brightness-95"
+            title="Clear search"
+          >
+            Clear
+          </button>
+        </div>
       </div>
     </>
   );

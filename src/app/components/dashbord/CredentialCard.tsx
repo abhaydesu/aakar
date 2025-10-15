@@ -3,68 +3,96 @@ import { Credential, CredentialStatus } from "@/types";
 import { useState, useEffect } from "react";
 
 const StatusBadge = ({ status }: { status: CredentialStatus }) => {
-  // FIX: Added 'Verifying' and 'VerificationFailed' to the style and icon maps
-  const styles = {
-    Verified: 'bg-green-900/50 text-green-400',
-    Pending: 'bg-yellow-900/50 text-yellow-400',
-    'Self-Reported': 'bg-gray-700 text-gray-400',
-    Verifying: 'bg-blue-900/50 text-blue-300',
-    VerificationFailed: 'bg-red-900/50 text-red-400',
+  const styles: Record<CredentialStatus, string> = {
+    Verified: "bg-green-100 text-green-800",
+    Pending: "bg-yellow-100 text-yellow-800",
+    "Self-Reported": "bg-neutral-100 text-neutral-700",
+    Verifying: "bg-blue-100 text-blue-800",
+    VerificationFailed: "bg-red-100 text-red-800",
   };
-  const icons = {
+
+  const icons: Record<CredentialStatus, React.ReactNode> = {
     Verified: <FiCheckCircle className="mr-1.5" />,
     Pending: <FiClock className="mr-1.5" />,
-    'Self-Reported': <FiUser className="mr-1.5" />,
+    "Self-Reported": <FiUser className="mr-1.5" />,
     Verifying: <FiLoader className="mr-1.5 animate-spin" />,
     VerificationFailed: <FiXCircle className="mr-1.5" />,
   };
+
   return (
-    <span className={`flex items-center text-xs px-2 py-1 rounded-full ${styles[status]}`}>
-      {icons[status]} {status}
+    <span
+      className={
+        `inline-flex items-center text-xs px-2 py-1 rounded-full font-medium ` +
+        styles[status]
+      }
+      aria-live="polite"
+    >
+      {icons[status]}
+      <span className="leading-none">{status}</span>
     </span>
   );
 };
 
 const VerificationSimulator = ({ credential }: { credential: Credential }) => {
-  const steps = ["Validating Digital Signature", "Cross-referencing with Issuer", "Checking for Revocation"];
+  const steps = ["Validating digital signature", "Cross-referencing with issuer", "Checking for revocation"];
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
+    setCurrentStep(0);
     const interval = setInterval(() => {
-      setCurrentStep(prev => {
+      setCurrentStep((prev) => {
         if (prev < steps.length) return prev + 1;
         clearInterval(interval);
         return prev;
       });
-    }, 2000);
+    }, 1800);
     return () => clearInterval(interval);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credential.id]);
 
   return (
-    <div className="space-y-2 mt-2">
-      {steps.map((step, index) => (
-        <div key={step} className={`flex items-center text-xs transition-colors duration-500 ${currentStep > index ? 'text-green-400' : 'text-gray-400'}`}>
-          {currentStep > index ? <FiCheckCircle className="mr-2 flex-shrink-0" /> : currentStep === index ? <FiLoader className="mr-2 flex-shrink-0 animate-spin" /> : <FiClock className="mr-2 flex-shrink-0" />}
-          <span>{step}</span>
-        </div>
-      ))}
+    <div className="space-y-2 mt-3">
+      {steps.map((step, index) => {
+        const done = currentStep > index;
+        const active = currentStep === index;
+        return (
+          <div
+            key={step}
+            className={`flex items-center text-sm transition-colors duration-300 ${done ? "text-green-700" : active ? "text-blue-700" : "text-neutral-500"}`}
+          >
+            <span className="mr-2 flex-shrink-0">
+              {done ? <FiCheckCircle /> : active ? <FiLoader className="animate-spin" /> : <FiClock />}
+            </span>
+            <span className={done ? "font-medium" : "font-normal"}>{step}</span>
+          </div>
+        );
+      })}
     </div>
   );
 };
 
-export const CredentialCard = ({ credential, onDelete }: { credential: Credential, onDelete: (credential: Credential) => void; }) => {
-  if (credential.status === 'Verifying') {
+export const CredentialCard = ({
+  credential,
+  onDelete,
+}: {
+  credential: Credential;
+  onDelete: (credential: Credential) => void;
+}) => {
+  // Verifying state: show progressive simulator but keep the card consistent with the site look
+  if (credential.status === "Verifying") {
     return (
-      <div className="bg-gray-800 rounded-lg p-4 flex flex-col justify-between shadow-lg border border-blue-500/50">
+      <div className="bg-white rounded-2xl p-4 flex flex-col justify-between shadow-sm border border-neutral-100">
         <div>
-          <h3 className="font-bold text-lg text-white">{credential.title}</h3>
-          <p className="text-gray-400 text-sm mt-1">{credential.issuer}</p>
+          <h3 className="font-semibold text-lg text-neutral-900">{credential.title}</h3>
+          <p className="text-sm text-neutral-600 mt-1">{credential.issuer}</p>
         </div>
-        <div className="mt-4 border-t border-gray-700 pt-3">
-          <div className="flex items-center text-sm text-blue-300 mb-2">
+
+        <div className="mt-4 border-t border-neutral-100 pt-3">
+          <div className="flex items-center text-sm text-blue-700 mb-2">
             <FiShield className="mr-2" />
-            <span>Verification in Progress...</span>
+            <span className="font-medium">Verification in progress…</span>
           </div>
+
           <VerificationSimulator credential={credential} />
         </div>
       </div>
@@ -72,30 +100,52 @@ export const CredentialCard = ({ credential, onDelete }: { credential: Credentia
   }
 
   return (
-    <div className="group relative bg-gray-800 rounded-lg p-4 flex flex-col justify-between transform hover:scale-105 transition-transform duration-300 shadow-lg">
-      <button 
+    <div className="relative bg-white rounded-2xl p-4 flex flex-col justify-between transform hover:scale-[1.01] transition-transform duration-200 shadow-sm border border-neutral-100">
+      <button
         onClick={() => onDelete(credential)}
-        className="absolute top-2 right-2 p-1.5 bg-red-800/50 text-red-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800/80"
-        aria-label="Delete credential"
+        className="absolute top-3 right-3 p-1.5 bg-red-50 text-red-700 rounded-full opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity"
+        aria-label={`Delete ${credential.title}`}
+        title="Delete credential"
       >
         <FiTrash2 size={14} />
       </button>
+
       <div>
-        <h3 className="font-bold text-lg text-white">{credential.title}</h3>
-        <p className="text-gray-400 text-sm mt-1">{credential.issuer}</p>
+        <h3 className="font-semibold text-lg text-neutral-900">{credential.title}</h3>
+        <p className="text-sm text-neutral-600 mt-1">{credential.issuer}</p>
+
         <div className="mt-3 flex flex-wrap gap-2">
-          {credential.skills.map((skill) => (
-            <span key={skill} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-full">{skill}</span>
+          {credential.skills?.map((skill) => (
+            <span
+              key={skill}
+              className="text-xs bg-neutral-100 text-neutral-800 px-2 py-1 rounded-full"
+            >
+              {skill}
+            </span>
           ))}
         </div>
       </div>
-      <div className="mt-4 flex justify-between items-center">
-        {credential.filePath ? (
-          <a href={credential.filePath} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs text-blue-400 hover:underline">
-            View Certificate <FiExternalLink className="ml-1" />
-          </a>
-        ) : <div />}
-        <StatusBadge status={credential.status} />
+
+      <div className="mt-4 flex items-center justify-between">
+        <div>
+          {credential.filePath ? (
+            <a
+              href={credential.filePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-sm text-blue-600 hover:underline"
+              aria-label={`View certificate for ${credential.title}`}
+            >
+              View certificate <FiExternalLink className="ml-2" />
+            </a>
+          ) : (
+            <span className="text-sm text-neutral-500">No file attached</span>
+          )}
+        </div>
+
+        <div>
+          <StatusBadge status={credential.status} />
+        </div>
       </div>
     </div>
   );

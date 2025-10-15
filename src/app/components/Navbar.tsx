@@ -3,25 +3,26 @@ import React from "react";
 import Image from "next/image";
 
 const navItems = [
-  {title:'डैshboard', href:'/dashboard'},
-  {title:'कontact', href:'/contact'},
-  {title:'अbout us', href:'/about-us'},
+  {title:'Dashboard', href:'/dashboard'},
+  {title:'Contact', href:'/contact'},
+  {title:'About us', href:'/about-us'},
 ];
 
 export const Navbar = () => {
   return (
     <nav className="bg-green-200 py-2">
       <div className="flex font-medium text-neutral-900 justify-between items-center px-8 mx-auto">
-        <div className="text-6xl tracking-tight font-medium gajraj-one-regular flex flex-row items-center">
-        
+        <div className="text-6xl tracking-tight hover:tracking-wide transition-all duration-300 font-medium gajraj-one-regular">
+        <Link className=" flex flex-row items-center" href="/">
             <span>
                 <Image src="/logo.jpg" width={50} height={50} alt="logo" />
             </span>
             <span className="pl-5" >
-                <Link href="/">
+                
             aakar
-            </Link>
+            
         </span>
+        </Link>
         {/* <span className="text-4xl tracking-tight font-medium yatra-one-regular"> aakar</span> */}
         </div>
         <div className="flex flex-row gap-8">

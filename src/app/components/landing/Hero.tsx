@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export const Hero = () => {
   return (
@@ -23,6 +24,7 @@ export const Hero = () => {
 
         <div className="flex flex-col items-center gap-6">
           <div className="gap-10 flex justify-center items-center">
+            <Link href="/dashboard">
             <button
               className="relative cursor-pointer py-4 px-6 rounded-sm bg-neutral-900 text-[#f9f0eb] font-semibold
                          border-4 border-transparent transition-all duration-180 transform-gpu will-change-transform
@@ -33,6 +35,7 @@ export const Hero = () => {
               <span className="absolute inset-0 rounded-xl pointer-events-none" />
               <span className="relative z-10">Get started</span>
             </button>
+            </Link>
 
             <button
               className="relative cursor-pointer py-4 px-6 rounded-sm bg-green-200 text-neutral-900 font-medium
