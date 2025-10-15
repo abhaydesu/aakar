@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast"; // 1. Import Toaster
+import { Toaster } from "react-hot-toast";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { AuthProvider } from "./components/AuthProvider"; // Import AuthProvider
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,18 +27,20 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <Navbar />
-        {children}
-        <Footer />
-        <Toaster // 2. Add the component here
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: '#334155', // bg-slate-700
-              color: '#f8fafc', // text-slate-50
-            },
-          }}
-        />
+        <AuthProvider> {/* Wrap with AuthProvider */}
+          <Navbar />
+          {children}
+          <Footer />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#334155',
+                color: '#f8fafc',
+              },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

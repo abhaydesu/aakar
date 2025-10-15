@@ -8,5 +8,6 @@ export type Credential = {
   status: CredentialStatus;
   skills: string[];
   group: string | null;
-  filePath?: string;
+  fileData?: string;
+  fileMimeType?: string;
 };

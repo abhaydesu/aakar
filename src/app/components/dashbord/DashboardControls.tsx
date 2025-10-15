@@ -30,18 +30,24 @@ export const DashboardControls = ({
         </div>
 
         <div className="flex items-center gap-3">
-        
+  <button
+    onClick={onAddClick}
+    className="inline-flex items-center bg-neutral-900 hover:scale-[1.02] text-[#f9f0eb] font-semibold py-2.5 px-4 rounded-sm transition-transform border-4 border-transparent"
+  >
+    <FiPlus className="-ml-1 mr-2" />
+    Add New
+  </button>
 
-          <button
-            onClick={onGroupToggle}
-            className="py-2.5 px-4 rounded-sm bg-green-800 text-neutral-100 font-medium
-                       border-4 border-transparent transition-colors duration-150 transform-gpu will-change-transform
-                       hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-800 cursor-pointer"
-            aria-pressed={isGrouped}
-          >
-            {isGrouped ? 'Show All' : 'Group Duplicates'}
-          </button>
-        </div>
+  <button
+    onClick={onGroupToggle}
+    className="py-2.5 px-4 rounded-sm bg-green-800 text-neutral-100 font-medium
+               border-4 border-transparent transition-colors duration-150 transform-gpu will-change-transform
+               hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-800 cursor-pointer"
+    aria-pressed={isGrouped}
+  >
+    {isGrouped ? 'Show All' : 'Group Duplicates'}
+  </button>
+</div>
       </div>
 
       <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-transparent flex flex-col sm:flex-row gap-4 items-center">
@@ -57,7 +63,6 @@ export const DashboardControls = ({
           />
         </div>
 
-        {/* Optional quick filters area (kept minimal) */}
         <div className="flex gap-2">
           <button
             onClick={() => onSearchChange('')}

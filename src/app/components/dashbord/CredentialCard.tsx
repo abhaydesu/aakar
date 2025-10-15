@@ -47,7 +47,6 @@ const VerificationSimulator = ({ credential }: { credential: Credential }) => {
       });
     }, 1800);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [credential.id]);
 
   return (
@@ -78,7 +77,6 @@ export const CredentialCard = ({
   credential: Credential;
   onDelete: (credential: Credential) => void;
 }) => {
-  // Verifying state: show progressive simulator but keep the card consistent with the site look
   if (credential.status === "Verifying") {
     return (
       <div className="bg-white rounded-2xl p-4 flex flex-col justify-between shadow-sm border border-neutral-100">
@@ -128,11 +126,12 @@ export const CredentialCard = ({
 
       <div className="mt-4 flex items-center justify-between">
         <div>
-          {credential.filePath ? (
+          {credential.fileData && credential.fileMimeType ? (
             <a
-              href={credential.filePath}
+              href={`data:${credential.fileMimeType};base64,${credential.fileData}`}
               target="_blank"
               rel="noopener noreferrer"
+              download={`certificate-${credential.title.replace(/\s/g, '_')}`}
               className="inline-flex items-center text-sm text-green-600 hover:underline"
               aria-label={`View certificate for ${credential.title}`}
             >
