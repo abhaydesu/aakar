@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { signIn, useSession, getProviders, ClientSafeProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function SignIn() {
   const { data: session } = useSession();
@@ -31,8 +32,13 @@ export default function SignIn() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-sm bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-white/10 text-center"
       >
-        <div className="mx-auto mb-6 h-16 w-16">
-           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-800"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+        <div className="mx-auto mb-6 h-16 w-16 flex items-center justify-center">
+           <Image 
+             src="/logo2.png"
+             alt="Aakar Logo"
+             width={64}
+             height={64}
+           />
         </div>
         <h1 className="text-3xl font-extrabold tracking-tight mb-2">
           Sign In to Aakar
@@ -60,3 +66,4 @@ export default function SignIn() {
     </div>
   );
 }
+
