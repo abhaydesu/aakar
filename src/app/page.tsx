@@ -146,7 +146,7 @@ export default function LandingPage() {
             <p className="mb-6 text-neutral-100">Start aggregating your micro-credentials and showcase a trusted, NSQF-aligned profile to employers.</p>
 
             <div className="flex justify-center gap-4">
-              <Link  className="py-3 px-6 rounded-lg bg-white text-green-900 font-semibold hover:scale-[1.02] transition" href="/signup">
+              <Link  className="py-3 px-6 rounded-lg bg-white text-green-900 font-semibold hover:scale-[1.02] transition" href="/signin">
                 Get started
               </Link>
 

@@ -5,12 +5,12 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Credential as CredentialType, CredentialStatus } from '@/types';
 import toast from 'react-hot-toast';
-import { AddCredentialModal } from '../components/dashbord/AddCredentialModel';
-import { CredentialCard } from '../components/dashbord/CredentialCard';
-import { DashboardControls } from '../components/dashbord/DashboardControls';
-import { DashboardStats } from '../components/dashbord/DashboardStats';
-import { EmptyState } from '../components/dashbord/EmptyState';
-import { ConfirmDeleteModal } from '../components/dashbord/ConfirmDeleteModal';
+import { AddCredentialModal } from '../components/dashboard/AddCredentialModel';
+import { CredentialCard } from '../components/dashboard/CredentialCard';
+import { DashboardControls } from '../components/dashboard/DashboardControls';
+import { DashboardStats } from '../components/dashboard/DashboardStats';
+import { EmptyState } from '../components/dashboard/EmptyState';
+import { ConfirmDeleteModal } from '../components/dashboard/ConfirmDeleteModal';
 
 type ApiCredential = Omit<CredentialType, 'id'> & { _id: string };
 
