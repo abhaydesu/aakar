@@ -1,6 +1,5 @@
 'use client';
-
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Credential as CredentialType, CredentialStatus } from '@/types';
@@ -25,26 +24,30 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [credentialToDelete, setCredentialToDelete] = useState<CredentialType | null>(null);
 
-  // ✅ Protect route
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/signin');
       return;
     }
     if (status === 'authenticated') {
-      const role = session?.user?.role || localStorage.getItem('aakar_role');
-      if (role !== 'user') {
+      const role = session?.user?.role;
+      if (!role) {
         router.push('/select-role');
+        return;
+      }
+      if (role !== 'user') {
+        router.push('/recruiter-dashboard');
         return;
       }
       const fetchCredentials = async () => {
         setIsLoading(true);
         try {
-          const res = await fetch('/api/credentials');
+          const res = await fetch('/api/credentials', { credentials: 'include' });
           const data: ApiCredential[] = await res.json();
           setCredentials(data.map(({ _id, ...rest }) => ({ ...rest, id: _id })));
         } catch (error) {
-          console.error("Failed to fetch credentials:", error);
+          // eslint-disable-next-line no-console
+          console.error('Failed to fetch credentials:', error);
           toast.error('Failed to load credentials.');
         } finally {
           setIsLoading(false);
@@ -59,23 +62,18 @@ export default function DashboardPage() {
     if (verifyingCredentials.length > 0) {
       verifyingCredentials.forEach(cred => {
         setTimeout(async () => {
-          const isVerifiable =
-            cred.issuer.toLowerCase().includes('coursera') ||
-            cred.issuer.toLowerCase().includes('nptel');
-          const finalStatus: CredentialStatus = isVerifiable
-            ? 'Verified'
-            : 'VerificationFailed';
+          const isVerifiable = cred.issuer.toLowerCase().includes('coursera') || cred.issuer.toLowerCase().includes('nptel');
+          const finalStatus: CredentialStatus = isVerifiable ? 'Verified' : 'VerificationFailed';
 
           const res = await fetch('/api/credentials', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ id: cred.id, status: finalStatus }),
           });
           if (res.ok) {
             const updatedCred: ApiCredential = await res.json();
-            setCredentials(prev =>
-              prev.map(c => (c.id === cred.id ? { ...c, status: updatedCred.status } : c))
-            );
+            setCredentials(prev => prev.map(c => c.id === cred.id ? { ...c, status: updatedCred.status } : c));
             toast.success(`Verification for '${cred.title}' complete.`);
           }
         }, 7000);
@@ -87,6 +85,7 @@ export default function DashboardPage() {
     const res = await fetch('/api/credentials', {
       method: 'POST',
       body: formData,
+      credentials: 'include',
     });
     if (res.ok) {
       const savedCredential: ApiCredential = await res.json();
@@ -105,6 +104,7 @@ export default function DashboardPage() {
     const res = await fetch('/api/credentials', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ id }),
     });
 
@@ -135,10 +135,7 @@ export default function DashboardPage() {
     filteredBySearch.forEach(cred => {
       if (cred.group) {
         if (!uniqueCredentials.has(cred.group)) {
-          uniqueCredentials.set(cred.group, {
-            ...cred,
-            title: `Group: ${cred.title} & others`,
-          });
+          uniqueCredentials.set(cred.group, { ...cred, title: `Group: ${cred.title} & others` });
         }
       } else {
         uniqueCredentials.set(cred.id.toString(), cred);
@@ -181,14 +178,9 @@ export default function DashboardPage() {
 
         {(isLoading && credentials.length === 0) ? (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(3)
-              .fill(0)
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-2xl p-4 shadow-md animate-pulse min-h-[12rem]"
-                />
-              ))}
+             {Array(3).fill(0).map((_, index) => (
+              <div key={index} className="bg-white rounded-2xl p-4 shadow-md animate-pulse min-h-[12rem]" />
+            ))}
           </div>
         ) : !isLoading && credentials.length === 0 ? (
           <div className="mt-16 flex justify-center">
@@ -204,11 +196,11 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {displayedCredentials.map((credential) => (
-                <CredentialCard
-                  key={credential.id}
-                  credential={credential}
-                  onDelete={setCredentialToDelete}
-                />
+                  <CredentialCard
+                    key={credential.id}
+                    credential={credential}
+                    onDelete={setCredentialToDelete}
+                  />
               ))}
             </div>
           </>
@@ -216,4 +208,4 @@ export default function DashboardPage() {
       </div>
     </main>
   );
-}
+};

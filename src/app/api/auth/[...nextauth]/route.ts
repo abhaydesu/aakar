@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions, Profile, Session } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import dbConnect from '@/lib/mongodb';
@@ -15,7 +14,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: { signIn: '/signin' },
-  debug: false,
   session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET!,
   cookies: {
@@ -29,8 +27,8 @@ export const authOptions: NextAuthOptions = {
       if (!profile || !profile.email) return false;
       try {
         await dbConnect();
-        const dbUser = await User.findOne({ email: profile.email });
-        if (!dbUser) {
+        const existing = await User.findOne({ email: profile.email });
+        if (!existing) {
           await User.create({
             email: profile.email,
             name: profile.name || profile.email.split('@')[0],
@@ -38,39 +36,42 @@ export const authOptions: NextAuthOptions = {
           });
         }
         return true;
-      } catch (err) {
-        console.error('signIn callback error', err);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('signIn callback error', e);
         return false;
       }
     },
     async session({ session }: { session: Session }) {
       try {
         await dbConnect();
-        const sessionUser = await User.findOne({ email: session.user?.email });
-        if (session.user && sessionUser) {
-          session.user.id = sessionUser._id.toString();
-          session.user.role = sessionUser.role;
+        const dbUser = await User.findOne({ email: session.user?.email });
+        if (session.user && dbUser) {
+          session.user.id = dbUser._id.toString();
+          session.user.role = dbUser.role;
         }
-      } catch (err) {
-        console.error('session callback error', err);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('session callback error', e);
       }
       return session;
     },
-    async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: { email?: string } }) {
+    async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: any }) {
       try {
-        const target = url?.startsWith('/') ? `${baseUrl}${url}` : url;
         if (user?.email) {
           await dbConnect();
           const dbUser = await User.findOne({ email: user.email });
-          if (dbUser && !dbUser.role) {
-            return `${baseUrl}/select-role`;
-          }
+          if (dbUser && !dbUser.role) return `${baseUrl}/select-role`;
         }
-        if (target) return target;
-      } catch (err) {
-        console.error('redirect callback error', err);
+        if (!url) return baseUrl;
+        // if URL is relative, normalize
+        if (url.startsWith('/')) return `${baseUrl}${url}`;
+        return url;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('redirect callback error', e);
+        return baseUrl;
       }
-      return baseUrl;
     },
   },
 };
