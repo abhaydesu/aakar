@@ -69,7 +69,7 @@ export const Hero = () => {
     It starts with a width of 0 (scale-x-0) and expands to full width on hover.
   */}
   <span
-    className="absolute inset-0 z-0 h-full w-full bg-[#ffdeb8]
+    className="absolute inset-0 z-0 h-full w-full bg-green-100
                transform scale-x-0 transition-transform duration-300 ease-in-out
                origin-left group-hover:scale-x-100"
   />
