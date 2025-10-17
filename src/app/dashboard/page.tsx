@@ -17,7 +17,7 @@ type ApiCredential = Omit<CredentialType, 'id'> & { _id: string };
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
+
   const [credentials, setCredentials] = useState<CredentialType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isGrouped, setIsGrouped] = useState(false);
@@ -25,23 +25,22 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [credentialToDelete, setCredentialToDelete] = useState<CredentialType | null>(null);
 
+  // ✅ Protect route
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/signin');
       return;
     }
-    
     if (status === 'authenticated') {
-      if (!session?.user?.role) {
+      const role = session?.user?.role || localStorage.getItem('aakar_role');
+      if (role !== 'user') {
         router.push('/select-role');
         return;
       }
-
       const fetchCredentials = async () => {
         setIsLoading(true);
         try {
-          const res = await fetch('/api/credentials', { credentials: 'include' });
-          if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+          const res = await fetch('/api/credentials');
           const data: ApiCredential[] = await res.json();
           setCredentials(data.map(({ _id, ...rest }) => ({ ...rest, id: _id })));
         } catch (error) {
@@ -53,30 +52,31 @@ export default function DashboardPage() {
       };
       fetchCredentials();
     }
-  }, [status, router, session]);
+  }, [status, session, router]);
 
   useEffect(() => {
     const verifyingCredentials = credentials.filter(c => c.status === 'Verifying');
     if (verifyingCredentials.length > 0) {
       verifyingCredentials.forEach(cred => {
         setTimeout(async () => {
-          try {
-            const isVerifiable = cred.issuer.toLowerCase().includes('coursera') || cred.issuer.toLowerCase().includes('nptel');
-            const finalStatus: CredentialStatus = isVerifiable ? 'Verified' : 'VerificationFailed';
+          const isVerifiable =
+            cred.issuer.toLowerCase().includes('coursera') ||
+            cred.issuer.toLowerCase().includes('nptel');
+          const finalStatus: CredentialStatus = isVerifiable
+            ? 'Verified'
+            : 'VerificationFailed';
 
-            const res = await fetch('/api/credentials', {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ id: cred.id, status: finalStatus }),
-            });
-            if (res.ok) {
-              const updatedCred: ApiCredential = await res.json();
-              setCredentials(prev => prev.map(c => c.id === cred.id ? { ...c, status: updatedCred.status } : c));
-              toast.success(`Verification for '${cred.title}' complete.`);
-            }
-          } catch (e) {
-            console.error('Verification PATCH failed', e);
+          const res = await fetch('/api/credentials', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: cred.id, status: finalStatus }),
+          });
+          if (res.ok) {
+            const updatedCred: ApiCredential = await res.json();
+            setCredentials(prev =>
+              prev.map(c => (c.id === cred.id ? { ...c, status: updatedCred.status } : c))
+            );
+            toast.success(`Verification for '${cred.title}' complete.`);
           }
         }, 7000);
       });
@@ -86,7 +86,6 @@ export default function DashboardPage() {
   const handleAddCredential = async (formData: FormData) => {
     const res = await fetch('/api/credentials', {
       method: 'POST',
-      credentials: 'include',
       body: formData,
     });
     if (res.ok) {
@@ -106,7 +105,6 @@ export default function DashboardPage() {
     const res = await fetch('/api/credentials', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ id }),
     });
 
@@ -120,7 +118,7 @@ export default function DashboardPage() {
     handleDeleteCredential(id);
     setCredentialToDelete(null);
   };
-  
+
   const displayedCredentials = useMemo(() => {
     const filteredBySearch = credentials.filter(cred => {
       const query = searchQuery.toLowerCase();
@@ -137,7 +135,10 @@ export default function DashboardPage() {
     filteredBySearch.forEach(cred => {
       if (cred.group) {
         if (!uniqueCredentials.has(cred.group)) {
-          uniqueCredentials.set(cred.group, { ...cred, title: `Group: ${cred.title} & others` });
+          uniqueCredentials.set(cred.group, {
+            ...cred,
+            title: `Group: ${cred.title} & others`,
+          });
         }
       } else {
         uniqueCredentials.set(cred.id.toString(), cred);
@@ -153,7 +154,7 @@ export default function DashboardPage() {
       </main>
     );
   }
-  
+
   return (
     <main className="min-h-screen bg-[#f9f0eb] text-neutral-900 p-4 sm:p-6 md:p-8">
       {showModal && (
@@ -162,13 +163,13 @@ export default function DashboardPage() {
           onAddCredential={handleAddCredential}
         />
       )}
-  
+
       <ConfirmDeleteModal
         credential={credentialToDelete}
         onClose={() => setCredentialToDelete(null)}
         onConfirm={confirmDelete}
       />
-  
+
       <div className="max-w-7xl mx-auto">
         <DashboardControls
           searchQuery={searchQuery}
@@ -177,12 +178,17 @@ export default function DashboardPage() {
           onGroupToggle={() => setIsGrouped(!isGrouped)}
           onAddClick={() => setShowModal(true)}
         />
-  
+
         {(isLoading && credentials.length === 0) ? (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {Array(3).fill(0).map((_, index) => (
-              <div key={index} className="bg-white rounded-2xl p-4 shadow-md animate-pulse min-h-[12rem]" />
-            ))}
+            {Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl p-4 shadow-md animate-pulse min-h-[12rem]"
+                />
+              ))}
           </div>
         ) : !isLoading && credentials.length === 0 ? (
           <div className="mt-16 flex justify-center">
@@ -195,14 +201,14 @@ export default function DashboardPage() {
             <div className="mt-8">
               <DashboardStats credentials={credentials} />
             </div>
-  
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {displayedCredentials.map((credential) => (
-                  <CredentialCard
-                    key={credential.id}
-                    credential={credential}
-                    onDelete={setCredentialToDelete}
-                  />
+                <CredentialCard
+                  key={credential.id}
+                  credential={credential}
+                  onDelete={setCredentialToDelete}
+                />
               ))}
             </div>
           </>
@@ -210,4 +216,4 @@ export default function DashboardPage() {
       </div>
     </main>
   );
-};
+}

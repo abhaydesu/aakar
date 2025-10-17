@@ -2,25 +2,34 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 export default function SelectRolePage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(false);
+  const { data: session, status, update } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/signin');
-    if (status === 'loading') return;
-    if (session?.user?.role) {
+    if (status === 'unauthenticated') {
+      router.push('/signin');
+      return;
+    }
+    if (status === 'authenticated' && session?.user?.role) {
       router.push(session.user.role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
     }
-  }, [session, status, router]);
+  }, [status, session, router]);
 
-  const pickRole = async (role: 'user' | 'recruiter') => {
-    if (loading) return;
-    setLoading(true);
+  const handleRoleSelection = async (role: 'user' | 'recruiter') => {
+    if (isLoading) return;
+    // guard if session already has role (extra safety)
+    if (session?.user?.role) {
+      router.push(session.user.role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const res = await fetch('/api/user/role', {
         method: 'POST',
@@ -28,36 +37,66 @@ export default function SelectRolePage() {
         body: JSON.stringify({ role }),
         credentials: 'include',
       });
+
       if (res.ok) {
-        toast.success('Role saved');
+        localStorage.setItem('aakar_role', role);
+        // update client session immediately so navbar reflects change and prevents re-entry
+        try { await update({ ...session, user: { ...session?.user, role } }); } catch (e) { /* ignore update error */ }
+        toast.success('Role saved successfully!');
         router.push(role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
       } else {
-        const txt = await res.text().catch(() => '');
-        console.error('save role failed', res.status, txt);
-        toast.error('Failed to save role');
+        const text = await res.text().catch(() => '');
+        if (res.status === 403) {
+          toast.error('Role already set. Redirecting...');
+          router.push(session?.user?.role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
+        } else {
+          console.error('Role update failed:', res.status, text);
+          toast.error('Failed to save role. Please try again.');
+        }
       }
-    } catch (e) {
-      console.error(e);
-      toast.error('Network error');
+    } catch (err) {
+      console.error('Fetch error in handleRoleSelection:', err);
+      toast.error('Network error. Check console.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f9f0eb]">
-      <div className="max-w-lg w-full bg-white rounded-xl p-8 shadow">
-        <h1 className="text-2xl font-bold mb-4">Choose your role</h1>
-        <p className="mb-6 text-neutral-600">Select a role to continue</p>
-        <div className="flex gap-4">
-          <button onClick={() => pickRole('user')} disabled={loading} className="flex-1 py-3 rounded-lg bg-neutral-900 text-white">
-            {loading ? 'Saving...' : "I'm a Student"}
-          </button>
-          <button onClick={() => pickRole('recruiter')} disabled={loading} className="flex-1 py-3 rounded-lg bg-green-800 text-white">
-            {loading ? 'Saving...' : "I'm a Recruiter"}
-          </button>
+    <div className="bg-[#f9f0eb] min-h-screen flex items-center justify-center py-10">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-lg bg-white rounded-2xl p-8 md:p-12 shadow-lg text-center"
+      >
+        <h1 className="text-3xl font-extrabold tracking-tight mb-3 text-neutral-900">
+          One Last Step
+        </h1>
+        <p className="text-neutral-700 mb-8">
+          Please select your role to complete your profile.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            disabled={isLoading}
+            onClick={() => handleRoleSelection('user')}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 text-white font-semibold px-6 py-3 shadow disabled:bg-neutral-400"
+          >
+            {isLoading ? 'Saving...' : "I'm a User"}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            disabled={isLoading}
+            onClick={() => handleRoleSelection('recruiter')}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-800 text-white font-semibold px-6 py-3 shadow disabled:bg-green-400"
+          >
+            {isLoading ? 'Saving...' : "I'm a Recruiter"}
+          </motion.button>
         </div>
-      </div>
-    </main>
+      </motion.div>
+    </div>
   );
 }

@@ -1,8 +1,7 @@
-// src/app/recruiter-dashboard/page.tsx
 'use client';
-import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function RecruiterDashboardPage() {
   const { data: session, status } = useSession();
@@ -10,21 +9,18 @@ export default function RecruiterDashboardPage() {
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/signin');
-    if (status === 'loading') return;
-    if (status === 'authenticated') {
-      if (session?.user?.role !== 'recruiter') router.push('/select-role');
-    }
+    if (status === 'authenticated' && session?.user?.role !== 'recruiter') router.push('/select-role');
   }, [session, status, router]);
 
   if (status !== 'authenticated' || session?.user?.role !== 'recruiter') {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <main className="min-h-screen bg-[#f9f0eb] flex items-center justify-center"><div className="text-xl font-semibold text-neutral-700">Loading...</div></main>;
   }
 
   return (
-    <main className="min-h-screen p-8 bg-[#f9f0eb]">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold">Recruiter Dashboard</h1>
-        <p className="mt-2">Welcome, {session.user.name}</p>
+    <main className="min-h-screen bg-[#f9f0eb] p-8 text-neutral-900">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-neutral-900">Recruiter Dashboard</h1>
+        <p className="mt-2 text-neutral-700">Welcome, {session.user.name}.</p>
       </div>
     </main>
   );

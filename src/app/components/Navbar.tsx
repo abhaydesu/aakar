@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from 'next-auth/react';
@@ -14,7 +14,14 @@ const navItems = [
 export const Navbar = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const userRole = session?.user?.role;
+  const [localRole, setLocalRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('aakar_role') : null;
+    if (stored) setLocalRole(stored);
+  }, []);
+
+  const userRole = session?.user?.role || localRole;
 
   return (
     <nav className="bg-green-800 py-2 sticky top-0 z-50 shadow-sm">
@@ -43,26 +50,26 @@ export const Navbar = () => {
           {session?.user ? (
             <div className="flex items-center gap-4">
               {userRole && (
-                 <Link
-                    href={userRole === 'user' ? '/dashboard' : '/recruiter-dashboard'}
-                    className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 border-neutral-200 text-neutral-200 hover:bg-neutral-200 hover:text-green-900"
-                  >
-                    Dashboard
-                  </Link>
+                <Link
+                  href={userRole === 'user' ? '/dashboard' : '/recruiter-dashboard'}
+                  className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 border-neutral-200 text-neutral-200 hover:bg-neutral-200 hover:text-green-900"
+                >
+                  Dashboard
+                </Link>
               )}
-              <button 
+              <button
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 border-neutral-200 text-neutral-200 hover:bg-neutral-200 hover:text-green-900"
+                className="flex items-center justify-center gap-2 text-lg py-2 px-4 rounded-full border-2 border-neutral-200 text-neutral-200 transition-all duration-300 hover:bg-neutral-200 hover:text-green-900"
               >
-                Sign Out
+                <Image
+                  src={session.user.image || '/default-avatar.png'}
+                  width={32}
+                  height={32}
+                  alt="User Profile"
+                  className="rounded-full"
+                />
+                <span>Sign Out</span>
               </button>
-              <Image 
-                src={session.user.image || '/default-avatar.png'} 
-                width={40} 
-                height={40} 
-                alt="User Profile"
-                className="rounded-full"
-              />
             </div>
           ) : (
             <Link
