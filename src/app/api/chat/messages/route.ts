@@ -4,6 +4,8 @@ import dbConnect from '@/lib/mongodb';
 import Message from '@/models/Message';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
+type ReqBody = { since?: string };
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -11,29 +13,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json().catch(() => ({}));
+    const body: ReqBody = await request.json().catch(() => ({}));
     const since = body?.since ? new Date(body.since) : new Date(0);
-    const withUser = body?.withUserId ? String(body.withUserId) : null;
 
     await dbConnect();
 
-    // If a specific chat partner is requested, show both sent and received messages
-    const filter = withUser
-      ? {
-          $or: [
-            { fromUserId: session.user.id, toUserId: withUser },
-            { fromUserId: withUser, toUserId: session.user.id },
-          ],
-        }
-      : {
-          $or: [
-            { toUserId: session.user.id },
-            { fromUserId: session.user.id },
-          ],
-          createdAt: { $gt: since },
-        };
-
-    const messages = await Message.find(filter).sort({ createdAt: 1 }).lean();
+    const messages = await Message.find({
+      toUserId: session.user.id,
+      createdAt: { $gt: since },
+    })
+      .sort({ createdAt: 1 })
+      .lean();
 
     return NextResponse.json(messages, { status: 200 });
   } catch (err) {

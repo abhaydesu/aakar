@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import dbConnect from '@/lib/mongodb';
 import Message from '@/models/Message';
+import User from '@/models/User';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 type ReqBody = { toUserId: string; text: string; roomId?: string };
@@ -23,9 +24,15 @@ export async function POST(request: Request) {
 
     await dbConnect();
 
+    const toUser = await User.findById(toUserId).select('name email').lean();
+    const fromName = session.user.name ?? session.user.email ?? 'User';
+    const toName = toUser?.name ?? (toUser?.email ? String(toUser.email) : undefined);
+
     const message = new Message({
       fromUserId: session.user.id,
       toUserId,
+      fromName,
+      toName,
       text,
       roomId: body.roomId ? String(body.roomId) : undefined,
       createdAt: new Date(),

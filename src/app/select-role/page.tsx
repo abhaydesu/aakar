@@ -1,5 +1,5 @@
-// src/app/select-role/page.tsx
 'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -38,10 +38,13 @@ export default function SelectRolePage() {
       });
 
       if (res.ok) {
-        localStorage.setItem('aakar_role', role);
-        try { await update({ ...session, user: { ...session?.user, role } }); } catch {}
+        try { await update?.({ ...session, user: { ...session?.user, role } }); } catch {}
         toast.success('Role saved successfully!');
-        router.push(role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
+        if (role === 'user') {
+          router.push('/profile');
+        } else {
+          router.push('/recruiter-dashboard');
+        }
       } else {
         const text = await res.text().catch(() => '');
         if (res.status === 403) {
