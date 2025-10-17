@@ -180,34 +180,41 @@ export default function RecruiterDashboardPage() {
           </div>
         </section>
 
-        <section>
-          <h2 className="text-xl font-semibold my-4 text-neutral-700">Results</h2>
+<section>
+  <h2 className="text-xl font-semibold my-4 text-neutral-700">Results</h2>
 
-          {isSearching && <div className="text-sm text-neutral-600 mb-4">Searching...</div>}
+  {isSearching && <div className="text-sm text-neutral-600 mb-4">Searching...</div>}
 
-          {results.length === 0 ? (
-            <div className="text-neutral-600">No results yet. Run a search to find candidates.</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {results.map((r) => (
-                <div key={r.id} className="bg-white rounded-2xl p-4 shadow flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full bg-green-700 text-white flex items-center justify-center text-lg font-bold">{r.name?.[0] ?? 'U'}</div>
-                    <div>
-                      <div className="font-semibold text-neutral-900">{r.name}</div>
-                      <div className="text-sm text-neutral-600">{r.email}</div>
-                      <div className="text-xs text-neutral-500 mt-1">Matches: {r.matchCount}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => openChat(r)} type="button" className="px-3 py-2 rounded-md bg-neutral-900 text-white font-medium hover:bg-neutral-700 cursor-pointer hover:scale-[1.02] transition-all duration-300 ease-out">Chat</button>
-                  </div>
-                </div>
-              ))}
+  {results.length === 0 ? (
+    <div className="text-neutral-600">No results yet. Run a search to find candidates.</div>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {results.map((r) => (
+        <div key={r.id} className="bg-white rounded-2xl p-4 shadow flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* User Info */}
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-green-700 text-white flex items-center justify-center text-lg font-bold flex-shrink-0">{r.name?.[0] ?? 'U'}</div>
+            <div>
+              <div className="font-semibold text-neutral-900 truncate">{r.name}</div>
+              <div className="text-sm text-neutral-600 truncate">{r.email}</div>
+              <div className="text-xs text-neutral-500 mt-1">Matches: {r.matchCount}</div>
             </div>
-          )}
-        </section>
+          </div>
+
+          <div className="flex sm:justify-end w-full sm:w-auto">
+            <button 
+              onClick={() => openChat(r)} 
+              type="button" 
+              className="px-4 py-2 w-full sm:w-auto rounded-md bg-neutral-900 text-white font-medium hover:bg-neutral-700 cursor-pointer transition-all duration-200"
+            >
+              Chat
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
       </div>
 
       {chatOpenFor && (

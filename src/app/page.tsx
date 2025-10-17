@@ -5,9 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Hero } from "./components/landing/Hero";
 
-// Single-file landing page composed of smaller sections to match the visual language you provided.
-// Sections included: Hero (existing), Features, HowItWorks, EmployerPortal, Testimonials, CTA, Footer.
-
 export default function LandingPage() {
   return (
     <div className="bg-[#f9f0eb] text-neutral-900 min-h-screen">
@@ -17,10 +14,6 @@ export default function LandingPage() {
         </section>
 
       <main className="mx-auto max-w-7xl">
-        {/* Hero (imported) */}
-        
-
-        {/* Features */}
         <section className="py-20 px-6 md:px-12">
           <div className="max-w-5xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-extrabold mb-4">All your micro-credentials. One trusted profile.</h2>
