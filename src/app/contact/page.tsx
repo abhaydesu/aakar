@@ -37,7 +37,7 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             className="lg:col-span-2 bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-white/10"
           >
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3">
+            <h1 className="text-4xl md:text-4xl font-extrabold tracking-tight mb-3">
               Get in touch
             </h1>
             <p className="text-neutral-700 mb-8 max-w-2xl">

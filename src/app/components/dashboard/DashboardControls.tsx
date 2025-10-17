@@ -19,7 +19,7 @@ export const DashboardControls = ({
     <>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-neutral-900">
+          <h1 className="text-4xl md:text-4xl font-extrabold text-neutral-900">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
               My Skill Portfolio
             </span>

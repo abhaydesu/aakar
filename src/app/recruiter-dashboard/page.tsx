@@ -133,7 +133,7 @@ export default function RecruiterDashboardPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-neutral-900">Recruiter — Find candidates</h1>
+            <h1 className="text-4xl font-extrabold text-neutral-900">Recruiter - Find candidates</h1>
             <p className="text-sm text-neutral-600">Search and message candidates by technology stack.</p>
           </div>
         </div>
@@ -142,22 +142,22 @@ export default function RecruiterDashboardPage() {
           <div className="flex flex-col md:flex-row gap-4 items-start">
             <div className="w-full md:w-2/3">
               <label className="text-sm font-medium text-neutral-700">Filter techs</label>
-              <div className="mt-2 flex gap-2">
+              <div className="mt-4 flex gap-3">
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search techs..."
-                  className="w-full md:w-1/3 bg-[#f3efe8] border border-neutral-300 rounded-lg p-2 focus:outline-none"
+                  className="w-full md:w-1/3 bg-[#fff7f0] text-neutral-700 rounded-lg p-2 focus:outline-none"
                 />
-                <button onClick={() => { setQuery(''); }} type="button" className="px-3 py-2 rounded-md bg-neutral-100 border border-neutral-200">Clear</button>
+                <button onClick={() => { setQuery(''); }} type="button" className="px-3 py-2 rounded-md bg-red-50 text-neutral-700 hover:bg-red-100 cursor-pointer transition-all duration-300 ease-out">Clear</button>
               </div>
 
-              <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-56 overflow-auto pr-2">
+              <div className="my-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 max-h-27 overflow-auto px-4">
                 {techOptions.map((tech) => {
                   const active = selectedTechs.includes(tech);
                   return (
-                    <button key={tech} type="button" onClick={() => toggleTech(tech)} className={`text-sm px-2 py-1 rounded-full border transition ${active ? 'bg-green-800 text-white' : 'bg-[#f3efe8] text-neutral-800'}`}>
+                    <button key={tech} type="button" onClick={() => toggleTech(tech)} className={`text-sm px-0 py-1 rounded-full transition cursor-pointer ${active ? 'bg-green-800 text-white' : 'bg-green-50 hover:bg-green-100  text-neutral-800'}`}>
                       {tech}
                     </button>
                   );
@@ -167,13 +167,13 @@ export default function RecruiterDashboardPage() {
               <div className="mt-3 text-sm text-neutral-600">Selected: {selectedTechs.length} (max 12)</div>
             </div>
 
-            <div className="w-full md:w-1/3 flex flex-col gap-2">
+            <div className="w-full md:w-1/3 flex flex-col gap-3">
               <label className="text-sm font-medium text-neutral-700">Actions</label>
-              <button onClick={doSearch} disabled={isSearching} type="button" className="inline-flex items-center justify-center gap-2 rounded-lg bg-green-800 text-white font-semibold px-4 py-3 shadow disabled:opacity-50">
+              <button onClick={doSearch} disabled={isSearching} type="button" className="inline-flex items-center justify-center gap-2 rounded-lg bg-green-800 hover:bg-green-700 cursor-pointer text-white transition-all duration-300 ease-out font-semibold px-4 py-3 shadow disabled:opacity-50">
                 {isSearching ? 'Searching...' : 'Search candidates'}
               </button>
 
-              <button onClick={() => { setSelectedTechs([]); setResults([]); }} type="button" className="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-100 text-neutral-900 font-medium px-4 py-3 shadow">
+              <button onClick={() => { setSelectedTechs([]); setResults([]); }} type="button" className="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition-all duration-300 ease-out text-neutral-900 font-medium px-4 py-3 shadow cursor-pointer">
                 Reset
               </button>
             </div>
@@ -181,14 +181,14 @@ export default function RecruiterDashboardPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-3">Results</h2>
+          <h2 className="text-xl font-semibold my-4 text-neutral-700">Results</h2>
 
           {isSearching && <div className="text-sm text-neutral-600 mb-4">Searching...</div>}
 
           {results.length === 0 ? (
             <div className="text-neutral-600">No results yet. Run a search to find candidates.</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {results.map((r) => (
                 <div key={r.id} className="bg-white rounded-2xl p-4 shadow flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -201,7 +201,7 @@ export default function RecruiterDashboardPage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button onClick={() => openChat(r)} type="button" className="px-3 py-2 rounded-md bg-neutral-900 text-white font-medium">Chat</button>
+                    <button onClick={() => openChat(r)} type="button" className="px-3 py-2 rounded-md bg-neutral-900 text-white font-medium hover:bg-neutral-700 cursor-pointer hover:scale-[1.02] transition-all duration-300 ease-out">Chat</button>
                   </div>
                 </div>
               ))}
@@ -215,17 +215,17 @@ export default function RecruiterDashboardPage() {
           <div className="bg-white rounded-2xl p-6 w-full max-w-lg">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="font-semibold">{chatOpenFor.name}</div>
+                <div className="font-semibold text-neutral-800">{chatOpenFor.name}</div>
                 <div className="text-sm text-neutral-600">{chatOpenFor.email}</div>
               </div>
-              <button type="button" onClick={() => setChatOpenFor(null)} className="text-neutral-600">Close</button>
+              <button type="button" onClick={() => setChatOpenFor(null)} className="px-3 py-2 rounded-md bg-neutral-100  text-neutral-700 hover:bg-red-100 cursor-pointer transition-all duration-300 ease-out">Close</button>
             </div>
 
-            <textarea value={chatText} onChange={(e) => setChatText(e.target.value)} rows={6} className="w-full p-3 border border-neutral-200 rounded-lg focus:outline-none mb-4" />
+            <textarea value={chatText} onChange={(e) => setChatText(e.target.value)} rows={6} className="w-full p-3 border border-neutral-200 rounded-lg text-neutral-600 focus:outline-none mb-4" />
 
             <div className="flex items-center justify-end gap-3">
-              <button type="button" onClick={() => setChatOpenFor(null)} className="px-4 py-2 rounded-md bg-neutral-100">Cancel</button>
-              <button type="button" onClick={sendChat} className="px-4 py-2 rounded-md bg-green-800 text-white">Send message</button>
+              <button type="button" onClick={() => setChatOpenFor(null)} className="px-4 py-2 rounded-md bg-red-50 text-neutral-700 hover:text-red-500 transition-all duration-300 ease-out cursor-pointer">Cancel</button>
+              <button type="button" onClick={sendChat} className="px-4 py-2 rounded-md bg-green-800 hover:bg-green-700  text-white ransition-all duration-300 ease-out cursor-pointer">Send message</button>
             </div>
           </div>
         </div>

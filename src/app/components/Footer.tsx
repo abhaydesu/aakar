@@ -25,7 +25,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-neutral-300">
             <li><Link href="/dashboard">Dashboard</Link></li>
             <li><Link href="/about">How it works</Link></li>
-            <li><Link href="/employer">Employer access</Link></li>
+            <li><Link href="/dashboard">Employer access</Link></li>
           </ul>
         </div>
 

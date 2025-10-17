@@ -109,7 +109,7 @@ export default function MyProfilePage() {
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.trim().toLowerCase())}
                 placeholder="choose-a-unique-id"
-                className="p-2 rounded-md border border-neutral-200 bg-[#f3efe8]"
+                className="p-2 rounded-md border border-neutral-200 text-black bg-[#f3efe8]"
               />
               <button onClick={handleSave} disabled={isSaving} className="px-3 py-2 rounded-md bg-green-800 text-white">
                 {isSaving ? 'Saving...' : 'Save'}

@@ -69,8 +69,8 @@ export const Navbar = () => {
 
   const userRole = session?.user?.role || localRole;
 
-  const buttonBase = "text-lg py-2 px-4 rounded-full border-2 transition-all duration-300";
-  const buttonLoggedIn = `${buttonBase} border-neutral-200 text-neutral-200 hover:bg-neutral-200 hover:text-green-900`;
+  const buttonBase = "text-lg py-2 px-4 rounded-full  transition-all duration-300";
+  const buttonLoggedIn = `${buttonBase} text-neutral-200 hover:bg-neutral-200 hover:text-green-900`;
   const buttonNav = `${buttonBase} border-transparent hover:border-neutral-200`;
 
   if (!mounted) {
@@ -100,7 +100,7 @@ export const Navbar = () => {
 
             <Link
               href="/signin"
-              className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300"
+              className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-900 text-neutral-200 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300"
             >
               Sign In
             </Link>
@@ -111,7 +111,7 @@ export const Navbar = () => {
   }
 
   return (
-    <nav className="bg-green-800 py-2 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-green-800 py-3 sticky top-0 z-50 shadow-sm">
       <div className="flex font-medium text-neutral-200 justify-between items-center px-8 mx-auto">
         <div className="text-6xl tracking-tight hover:tracking-wide transition-all duration-300 font-medium gajraj-one-regular">
           <Link href="/" className="flex flex-row items-center">
@@ -137,13 +137,14 @@ export const Navbar = () => {
               })}
               <Link
                 href="/signin"
-                className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300"
+                className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-900 text-neutral-200 border-neutral-900 hover:bg-neutral-200 hover:border-neutral-900 hover:text-neutral-900"
               >
                 Sign In
               </Link>
             </>
           ) : (
             <div className="flex items-center gap-4">
+              
               {userRole && (
                 <Link
                   href={userRole === 'user' ? '/dashboard' : '/recruiter-dashboard'}
@@ -156,7 +157,7 @@ export const Navbar = () => {
               <div className="relative">
                 <Link
                   href="/inbox"
-                  className={buttonLoggedIn}
+                  className={`${buttonLoggedIn} py-3`}
                 >
                   Messages
                 </Link>
@@ -165,12 +166,18 @@ export const Navbar = () => {
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </span>
                 )}
+                <Link 
+                href="/about"
+                className={`${buttonLoggedIn} py-3 mx-2`}
+                >
+              About
+              </Link>
               </div>
 
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen((prev) => !prev)}
-                  className="flex items-center justify-center gap-2 text-lg py-2 px-3 rounded-full border-2 border-neutral-200 text-neutral-200 transition-all duration-300 hover:bg-neutral-200 hover:text-green-900"
+                  className="flex items-center justify-center gap-2 text-lg py-2 px-3 rounded-full  text-neutral-200 transition-all duration-300 bg-neutral-800 hover:bg-neutral-200 hover:text-neutral-800  cursor-pointer"
                   aria-expanded={dropdownOpen}
                   aria-haspopup="true"
                   type="button"
@@ -188,7 +195,7 @@ export const Navbar = () => {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg text-neutral-800 overflow-hidden">
+                  <div className="absolute right-0 mt-5 border-2 border-green-800 w-44 bg-white rounded-lg shadow-lg text-neutral-800 overflow-hidden">
                     {userRole === 'user' && (
                       <Link
                         href="/profile"
@@ -198,13 +205,6 @@ export const Navbar = () => {
                         Profile
                       </Link>
                     )}
-                    <Link
-                      href="/about"
-                      className="block px-4 py-2 text-sm hover:bg-neutral-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      About us
-                    </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: '/' })}
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-100"

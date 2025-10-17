@@ -106,7 +106,7 @@ export default function ChatBox({ toUserId, currentUserId }: { toUserId: string;
         toast.error('Failed to send message.');
       }
     } catch (err) {
-      toast.error('Network error while sending message.');
+      toast.error(`Network error while sending message.: ${err}`);
     } finally {
       setIsSending(false);
     }
@@ -124,7 +124,7 @@ export default function ChatBox({ toUserId, currentUserId }: { toUserId: string;
                 : 'mr-auto bg-neutral-100 text-neutral-800'
             }`}
           >
-            <div className="text-sm">{msg.text}</div>
+            <div className="text-sm pl-1">{msg.text}</div>
             <div className="text-xs text-neutral-500 mt-1 text-right">{new Date(msg.createdAt).toLocaleString()}</div>
           </div>
         ))}
@@ -136,12 +136,12 @@ export default function ChatBox({ toUserId, currentUserId }: { toUserId: string;
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Type a message..."
-          className="flex-1 border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
+          className="flex-1 border border-neutral-300 text-neutral-700 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-700"
         />
         <button
           onClick={handleSend}
           disabled={isSending}
-          className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 disabled:bg-amber-300"
+          className="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-600 disabled:bg-amber-300 cursor-pointer"
         >
           Send
         </button>

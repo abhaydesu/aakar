@@ -78,7 +78,7 @@ export const AddCredentialModal: React.FC<Props> = ({ onClose, onAddCredential }
           <button
             type="button"
             onClick={onClose}
-            className="text-neutral-600"
+            className="text-neutral-600 px-4 py-2 rounded-lg  cursor-pointer hover:text-red-700 hover:border-red-700 border  border-neutral-600"
           >
             Close
           </button>
@@ -117,14 +117,14 @@ export const AddCredentialModal: React.FC<Props> = ({ onClose, onAddCredential }
           </label>
 
           <label className="flex flex-col">
-            <span className="text-sm font-medium text-neutral-700">Certificate (optional)</span>
+            <span className="text-sm font-medium text-neutral-700 ">Certificate (optional)</span>
             <input
               type="file"
               accept=".pdf,image/*"
               onChange={(e) =>
                 handleFile(e.target.files ? e.target.files[0] : null)
               }
-              className="mt-1"
+              className="mt-1 border border-neutral-300 bg-neutral-100 cursor-pointer hover:bg-neutral-200 p-3 rounded-lg text-green-800/70"
             />
             {file && (
               <div className="text-xs text-neutral-600 mt-1">{file.name}</div>
@@ -157,13 +157,13 @@ export const AddCredentialModal: React.FC<Props> = ({ onClose, onAddCredential }
                   key={tech}
                   type="button"
                   onClick={() => toggleTech(tech)}
-                  className={`text-sm px-2 py-1 rounded-full border transition ${
+                  className={`text-sm px-2 py-1 rounded-full border transition cursor-pointer ${
                     active
-                      ? 'bg-green-800 text-white'
-                      : 'bg-[#f3efe8] text-neutral-800'
+                      ? 'bg-green-800/70 text-white'
+                      : 'bg-[#f3efe8] text-neutral-800 hover:bg-[#fffcf3]'
                   }`}
                 >
-                  {tech}
+                  {tech.toLowerCase()}
                 </button>
               );
             })}
@@ -174,13 +174,13 @@ export const AddCredentialModal: React.FC<Props> = ({ onClose, onAddCredential }
               {selected.map((s) => (
                 <div
                   key={s}
-                  className="inline-flex items-center gap-2 bg-neutral-100 px-3 py-1 rounded-full text-sm"
+                  className="inline-flex items-center gap-2 bg-neutral-100 px-3 py-1 rounded-full text-sm "
                 >
                   <span>{s}</span>
                   <button
                     type="button"
                     onClick={() => toggleTech(s)}
-                    className="text-neutral-500"
+                    className="text-green-700 hover:text-red-700 cursor-pointer"
                   >
                     ×
                   </button>
@@ -201,7 +201,7 @@ export const AddCredentialModal: React.FC<Props> = ({ onClose, onAddCredential }
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-md bg-neutral-900 text-white font-semibold"
+            className="px-4 py-2 rounded-md bg-green-800 text-white font-semibold"
           >
             {isSubmitting ? 'Saving...' : 'Add Credential'}
           </button>

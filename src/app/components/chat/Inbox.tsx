@@ -83,7 +83,9 @@ export default function Inbox() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-2xl p-4 shadow">
-        <h3 className="font-semibold mb-3">Inbox</h3>
+        <h3 className="font-semibold mb-3 pb-4 border-b ">
+          <span className='text-neutral-200 rounded-xl bg-green-800 py-2 px-4'>Inbox</span>
+          </h3>
         {partners.length === 0 ? (
           <div className="text-sm text-neutral-600">No conversations yet.</div>
         ) : (
@@ -92,14 +94,14 @@ export default function Inbox() {
               <button
                 key={p.partnerId}
                 onClick={() => setSelectedPartner(p.partnerId)}
-                className="w-full text-left flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-neutral-50"
+                className="w-full text-left flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-green-50 cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-bold">
                     {p.latest.text?.[0]?.toUpperCase() ?? 'U'}
                   </div>
                   <div>
-                    <div className="font-medium">User {p.partnerId.slice(-6)}</div>
+                    <div className="font-medium text-neutral-700">User {p.partnerId.slice(-6)}</div>
                     <div className="text-sm text-neutral-600 truncate max-w-[22rem]">{p.latest.text}</div>
                   </div>
                 </div>
@@ -113,8 +115,8 @@ export default function Inbox() {
       {selectedPartner && (
         <div className="bg-white rounded-2xl p-4 shadow">
           <div className="flex items-center justify-between mb-3">
-            <div className="font-semibold">Conversation</div>
-            <button onClick={() => setSelectedPartner(null)} className="text-neutral-600">Close</button>
+            <div className="font-semibold text-neutral-800">Conversation</div>
+            <button onClick={() => setSelectedPartner(null)} className="text-neutral-600 border border-neutral-600 hover:border-red-500 hover:text-red-500 py-2 px-4 rounded-lg cursor-pointer">Close</button>
           </div>
           <ChatBox toUserId={selectedPartner} currentUserId={currentUserId} />
         </div>

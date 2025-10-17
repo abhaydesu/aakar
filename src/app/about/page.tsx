@@ -18,10 +18,6 @@ export default function AboutPage() {
               integrations, verification mechanisms (DigiLocker / NCVET / blockchain), and AI-assisted normalization to
               create a reliable skills record for learners, employers, and policymakers.
             </p>
-
-            <a className="inline-block mt-4 py-3 px-5 rounded-lg bg-neutral-900 text-white font-semibold hover:scale-[1.02] transition" href="/contact">
-              Contact us
-            </a>
           </div>
         </section>
 
