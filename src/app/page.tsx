@@ -136,7 +136,7 @@ export default function LandingPage() {
             <h3 className="text-3xl font-bold mb-4">Create your verified skills portfolio</h3>
             <p className="mb-6 text-neutral-100">Start aggregating your micro-credentials and showcase a trusted, NSQF-aligned profile to employers.</p>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 text-sm md:text-md">
               <Link  className="py-3 px-6 rounded-lg bg-white text-green-900 font-semibold hover:scale-[1.02] transition" href="/signin">
                 Get started
               </Link>
