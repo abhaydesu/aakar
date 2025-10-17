@@ -102,7 +102,7 @@ export const CredentialCard = ({
     <div className="relative bg-white rounded-2xl p-4 flex flex-col justify-between transform hover:scale-[1.01] transition-transform duration-200 shadow-sm border border-neutral-100">
       <button
         onClick={() => onDelete(credential)}
-        className="absolute top-3 right-3 p-1.5 bg-red-50 text-red-700 rounded-full opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity"
+        className="absolute top-3 right-3 p-1.5 bg-red-50 text-red-700 rounded-full opacity-40 hover:opacity-100 focus:opacity-100 transition-opacity"
         aria-label={`Delete ${credential.title}`}
         title="Delete credential"
       >
