@@ -47,7 +47,7 @@ export default function RecruiterDashboardPage() {
 
   const techOptions = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return TECHS.slice(0, 40); // show top 40 initially
+    if (!q) return TECHS.slice(0, 40); 
     return TECHS.filter((t) => t.toLowerCase().includes(q)).slice(0, 50);
   }, [query]);
 

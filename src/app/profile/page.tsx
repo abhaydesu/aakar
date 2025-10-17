@@ -36,7 +36,7 @@ export default function MyProfilePage() {
       if (res.ok) {
         toast.success('Profile id saved!');
         try {
-          await update?.({ ...session, user: { ...((session as any)?.user ?? {}), slug } });
+          await update({ ...session, user: { ...session?.user, slug } });
         } catch {}
         router.push('/dashboard');
       } else {
