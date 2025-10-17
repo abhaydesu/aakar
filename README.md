@@ -1,6 +1,6 @@
-# Aakar - Unified Skill Portfolio
-
 <img src="https://raw.githubusercontent.com/abhaydesu/aakar/main/public/logo2.png" width="150" />
+
+# Aakar - Unified Skill Portfolio
 
 Aakar is a micro-credential aggregator platform designed to empower learners by providing a single, unified, and verifiable portfolio for all their skills and qualifications. In a world of fragmented online learning, Aakar brings together credentials from various platforms, aligns them with the National Skills Qualifications Framework (NSQF), and presents them in a clean, professional format that is ready for employers.
 
