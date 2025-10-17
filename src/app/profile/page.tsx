@@ -13,7 +13,7 @@ export default function MyProfilePage() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      setSlug((session as any)?.user?.slug ?? '');
+      setSlug((session?.user as any)?.slug ?? '');
     }
   }, [status, session]);
 
@@ -70,7 +70,7 @@ export default function MyProfilePage() {
     );
   }
 
-  const user = session.user;
+  const user = session.user as { name?: string; email?: string; image?: string; slug?: string; role?: string };
 
   return (
     <main className="min-h-screen bg-[#f9f0eb] p-8">
@@ -87,29 +87,16 @@ export default function MyProfilePage() {
         </div>
 
         <div className="mt-6">
-<h3 className="text-lg font-semibold mb-2 text-black">Public profile id (one-time)</h3>          {user.slug ? (
+          <h3 className="text-lg font-semibold mb-2 text-black">Public profile id (one-time)</h3>
+          {user.slug ? (
             <div className="flex items-center gap-3">
               <div className="px-3 py-2 rounded-md bg-neutral-100 text-sm">/profile/{user.slug}</div>
-              <button
-                onClick={() => {
-                  if (typeof navigator !== 'undefined' && navigator.clipboard) void navigator.clipboard.writeText(`${location.origin}/profile/${user.slug}`);
-                }}
-                className="px-3 py-2 rounded-md bg-neutral-900 text-white"
-              >
-                Copy link
-              </button>
+              <button onClick={() => { if (typeof navigator !== 'undefined' && navigator.clipboard) void navigator.clipboard.writeText(`${location.origin}/profile/${user.slug}`); }} className="px-3 py-2 rounded-md bg-neutral-900 text-white">Copy link</button>
             </div>
           ) : (
             <div className="flex gap-2 items-center">
-              <input
-                value={slug}
-                onChange={(e) => setSlug(e.target.value.trim().toLowerCase())}
-                placeholder="choose-a-unique-id"
-                className="p-2 rounded-md border border-neutral-200 bg-[#f3efe8]"
-              />
-              <button onClick={handleSave} disabled={isSaving} className="px-3 py-2 rounded-md bg-green-800 text-white">
-                {isSaving ? 'Saving...' : 'Save'}
-              </button>
+              <input value={slug} onChange={(e) => setSlug(e.target.value.trim().toLowerCase())} placeholder="choose-a-unique-id" className="p-2 rounded-md border border-neutral-200 bg-[#f3efe8]" />
+              <button onClick={handleSave} disabled={isSaving} className="px-3 py-2 rounded-md bg-green-800 text-white">{isSaving ? 'Saving...' : 'Save'}</button>
             </div>
           )}
           <div className="text-xs text-neutral-500 mt-2">Once set you cannot change this id. Allowed: lowercase letters, numbers and hyphens.</div>

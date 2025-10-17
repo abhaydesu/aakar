@@ -1,5 +1,4 @@
 'use client';
-
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -40,7 +39,7 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    let iv: number | undefined;
+    let intervalId: number | undefined;
     const fetchUnread = async () => {
       if (!session?.user?.id) {
         setUnreadCount(0);
@@ -55,27 +54,24 @@ export const Navbar = () => {
           setUnreadCount(0);
           return;
         }
-        const data: { unreadConversations?: number } = await res.json();
-        setUnreadCount(data.unreadConversations ?? 0);
+        const data = (await res.json()) as { count?: number };
+        setUnreadCount(data.count ?? 0);
       } catch {
         setUnreadCount(0);
       }
     };
     fetchUnread();
-    iv = window.setInterval(fetchUnread, 5000);
+    intervalId = window.setInterval(fetchUnread, 5000);
     return () => {
-      if (iv) window.clearInterval(iv);
+      if (intervalId) window.clearInterval(intervalId);
     };
   }, [session?.user?.id]);
 
   const userRole = session?.user?.role || localRole;
 
-  // keep class strings constant to avoid dynamic shape/class substitutions
   const buttonBase = "text-lg py-2 px-4 rounded-full border-2 transition-all duration-300";
   const buttonLoggedIn = `${buttonBase} border-neutral-200 text-neutral-200 hover:bg-neutral-200 hover:text-green-900`;
-  const buttonNav = `${buttonBase} border-transparent hover:border-neutral-200`;
 
-  // Server-safe placeholder (rendered same each time on server) — keeps markup stable during SSR
   if (!mounted) {
     return (
       <nav className="bg-green-800 py-2 sticky top-0 z-50 shadow-sm">
@@ -88,32 +84,15 @@ export const Navbar = () => {
           </div>
 
           <div className="flex flex-row gap-4 sm:gap-8 items-center">
-            <Link
-              href="/contact"
-              className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 border-transparent hover:border-neutral-200`}
-            >
-              Contact
-            </Link>
-            <Link
-              href="/about"
-              className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 border-transparent hover:border-neutral-200`}
-            >
-              About us
-            </Link>
-
-            <Link
-              href="/signin"
-              className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300"
-            >
-              Sign In
-            </Link>
+            <Link href="/contact" className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 border-transparent hover:border-neutral-200`}>Contact</Link>
+            <Link href="/about" className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 border-transparent hover:border-neutral-200`}>About us</Link>
+            <Link href="/signin" className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300">Sign In</Link>
           </div>
         </div>
       </nav>
     );
   }
 
-  // Full interactive navbar (client only)
   return (
     <nav className="bg-green-800 py-2 sticky top-0 z-50 shadow-sm">
       <div className="flex font-medium text-neutral-200 justify-between items-center px-8 mx-auto">
@@ -130,40 +109,21 @@ export const Navbar = () => {
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 ${isActive ? "bg-neutral-200 text-green-900 border-neutral-200" : "border-transparent hover:border-neutral-200"}`}
-                  >
+                  <Link key={item.href} href={item.href} className={`text-lg relative py-2 px-4 rounded-full border-2 transition-all duration-300 ${isActive ? "bg-neutral-200 text-green-900 border-neutral-200" : "border-transparent hover:border-neutral-200"}`}>
                     {item.title}
                   </Link>
                 );
               })}
-              <Link
-                href="/signin"
-                className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300"
-              >
-                Sign In
-              </Link>
+              <Link href="/signin" className="text-lg py-2 px-4 rounded-full border-2 transition-all duration-300 bg-neutral-200 text-green-900 border-neutral-200 hover:bg-neutral-300 hover:border-neutral-300">Sign In</Link>
             </>
           ) : (
             <div className="flex items-center gap-4">
               {userRole && (
-                <Link
-                  href={userRole === 'user' ? '/dashboard' : '/recruiter-dashboard'}
-                  className={buttonLoggedIn}
-                >
-                  Dashboard
-                </Link>
+                <Link href={userRole === 'user' ? '/dashboard' : '/recruiter-dashboard'} className={buttonLoggedIn}>Dashboard</Link>
               )}
 
               <div className="relative">
-                <Link
-                  href="/inbox"
-                  className={buttonLoggedIn}
-                >
-                  Messages
-                </Link>
+                <Link href="/inbox" className={buttonLoggedIn}>Messages</Link>
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full shadow">
                     {unreadCount > 99 ? '99+' : unreadCount}
@@ -172,20 +132,8 @@ export const Navbar = () => {
               </div>
 
               <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setDropdownOpen((prev) => !prev)}
-                  className="flex items-center justify-center gap-2 text-lg py-2 px-3 rounded-full border-2 border-neutral-200 text-neutral-200 transition-all duration-300 hover:bg-neutral-200 hover:text-green-900"
-                  aria-expanded={dropdownOpen}
-                  aria-haspopup="true"
-                  type="button"
-                >
-                  <Image
-                    src={session.user.image || '/default-avatar.png'}
-                    width={32}
-                    height={32}
-                    alt="User Profile"
-                    className="rounded-full"
-                  />
+                <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center justify-center gap-2 text-lg py-2 px-3 rounded-full border-2 border-neutral-200 text-neutral-200 transition-all duration-300 hover:bg-neutral-200 hover:text-green-900" aria-expanded={dropdownOpen} aria-haspopup="true" type="button">
+                  <Image src={session.user.image || '/default-avatar.png'} width={32} height={32} alt="User Profile" className="rounded-full" />
                   <svg className="w-3 h-3" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M5 7l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -194,27 +142,10 @@ export const Navbar = () => {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg text-neutral-800 overflow-hidden">
                     {userRole === 'user' && (
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm hover:bg-neutral-100"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Profile
-                      </Link>
+                      <Link href="/profile" className="block px-4 py-2 text-sm hover:bg-neutral-100" onClick={() => setDropdownOpen(false)}>Profile</Link>
                     )}
-                    <Link
-                      href="/about"
-                      className="block px-4 py-2 text-sm hover:bg-neutral-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      About us
-                    </Link>
-                    <button
-                      onClick={() => signOut({ callbackUrl: '/' })}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-100"
-                    >
-                      Sign out
-                    </button>
+                    <Link href="/about" className="block px-4 py-2 text-sm hover:bg-neutral-100" onClick={() => setDropdownOpen(false)}>About us</Link>
+                    <button onClick={() => signOut({ callbackUrl: '/' })} className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-100">Sign out</button>
                   </div>
                 )}
               </div>

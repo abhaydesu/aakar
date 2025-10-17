@@ -15,7 +15,6 @@ export async function GET() {
     const count = Array.isArray(distinct) ? distinct.length : 0;
     return NextResponse.json({ count }, { status: 200 });
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error('GET /api/chat/unread-chats error', err);
     return NextResponse.json({ count: 0 }, { status: 500 });
   }

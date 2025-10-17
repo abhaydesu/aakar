@@ -11,56 +11,53 @@ function escapeRegExp(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+type IUserLean = {
+  _id: unknown;
+  name?: string;
+  email?: string;
+  image?: string;
+  role?: string;
+  slug?: string;
+};
+
+type ICred = {
+  _id: unknown;
+  title?: string;
+  issuer?: string;
+  date?: string | Date;
+  skills?: string[];
+  fileData?: string;
+  fileMimeType?: string;
+};
+
 export default async function PublicProfilePage({ params }: Props) {
   await dbConnect();
 
   const rawId = String(params.id || '').trim();
 
-  let user: {
-    _id: unknown;
-    name?: string;
-    email?: string;
-    image?: string;
-    role?: string;
-    slug?: string;
-  } | null = null;
+  let user: IUserLean | null = null;
 
   if (/^[0-9a-fA-F]{24}$/.test(rawId)) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    user = (await User.findById(rawId).select('name image email role slug').lean()) as any;
+    user = (await User.findById(rawId).select('name image email role slug').lean()) as IUserLean | null;
   }
 
   if (!user) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    user = (await User.findOne({ slug: rawId }).select('name image email role slug').lean()) as any;
+    user = (await User.findOne({ slug: rawId }).select('name image email role slug').lean()) as IUserLean | null;
   }
 
   if (!user) {
     const maybeName = rawId.replace(/-/g, ' ');
     const nameRegex = new RegExp(`^${escapeRegExp(maybeName)}$`, 'i');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    user = (await User.findOne({ name: nameRegex }).select('name image email role slug').lean()) as any;
+    user = (await User.findOne({ name: nameRegex }).select('name image email role slug').lean()) as IUserLean | null;
   }
 
   if (!user && rawId.includes('@')) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    user = (await User.findOne({ email: rawId }).select('name image email role slug').lean()) as any;
+    user = (await User.findOne({ email: rawId }).select('name image email role slug').lean()) as IUserLean | null;
   }
 
   if (!user) return notFound();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const creds = (await Credential.find({ userId: String(user._id) }).sort({ date: -1 }).lean()) as Array<
-    {
-      _id: unknown;
-      title?: string;
-      issuer?: string;
-      date?: string | Date;
-      skills?: string[];
-      fileData?: string;
-      fileMimeType?: string;
-    }
-  >;
+  const creds = (await Credential.find({ userId: String(user._id) }).sort({ date: -1 }).lean()) as ICred[];
 
   return (
     <main className="bg-[#f9f0eb] min-h-screen text-neutral-900 py-12">

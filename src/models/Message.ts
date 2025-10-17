@@ -22,5 +22,5 @@ const MessageSchema = new Schema<IMessage>({
   read: { type: Boolean, default: false },
 });
 
-const Message = (models.Message as any) || model<IMessage>('Message', MessageSchema);
+const Message = models.Message || model<IMessage>('Message', MessageSchema);
 export default Message;

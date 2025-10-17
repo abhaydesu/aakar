@@ -11,6 +11,8 @@ function validateSlug(s: string) {
   return /^[a-z0-9\-]+$/.test(trimmed);
 }
 
+type DbUserSlug = { slug?: string } | null;
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -27,12 +29,12 @@ export async function POST(request: Request) {
 
     await dbConnect();
 
-    const dbUser = await User.findById(session.user.id).select('slug').lean();
+    const dbUser = (await User.findById(session.user.id).select('slug').lean()) as DbUserSlug;
     if (!dbUser) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
-    if ((dbUser as any).slug) {
+    if (dbUser.slug) {
       return NextResponse.json({ message: 'Slug already set' }, { status: 403 });
     }
 
@@ -44,7 +46,6 @@ export async function POST(request: Request) {
     await User.findByIdAndUpdate(session.user.id, { slug: raw });
     return NextResponse.json({ message: 'Slug saved', slug: raw }, { status: 200 });
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error('POST /api/user/slug error', err);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
