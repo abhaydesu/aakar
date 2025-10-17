@@ -4,7 +4,7 @@ import Credential from '@/models/Credential';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import CopyProfileLinkButton from '../../components/CopyProfileLinkButton';
-import OnboardingBanner from '../../components/OnboardingBanner'; // <-- Import the new banner
+import OnboardingBanner from '../../components/OnboardingBanner'; 
 
 type Props = { params: { id: string } };
 
@@ -87,7 +87,6 @@ export default async function PublicProfilePage({ params }: Props) {
             <p className="mt-1 text-sm text-neutral-600">{user.email}</p>
             <div className="mt-3 inline-flex items-center gap-4">
               <span className="text-sm px-3 py-1 rounded-lg bg-green-50 text-green-800">{user.role ?? 'Learner'}</span>
-              <CopyProfileLinkButton />
             </div>
           </div>
         </section>
@@ -136,11 +135,7 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
           )}
         </section>
-
-        {/* The old 'About Aakar' section is now removed */}
       </div>
-
-      {/* The new onboarding banner is added here */}
       <OnboardingBanner />
     </main>
   );
