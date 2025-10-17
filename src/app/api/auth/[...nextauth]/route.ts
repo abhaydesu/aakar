@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions, Profile, Session } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import dbConnect from '@/lib/mongodb';
@@ -15,7 +14,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: { signIn: '/signin' },
-  debug: false,
   session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET!,
   cookies: {
@@ -43,19 +41,42 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async session({ session }: { session: Session }) {
+
+    // jwt callback: ensure token contains role (used by middleware getToken)
+    async jwt({ token, user }) {
       try {
-        await dbConnect();
-        const sessionUser = await User.findOne({ email: session.user?.email });
-        if (session.user && sessionUser) {
-          session.user.id = sessionUser._id.toString();
-          session.user.role = sessionUser.role;
+        // first time after sign in: user is present
+        if (user?.email) {
+          await dbConnect();
+          const dbUser = await User.findOne({ email: user.email });
+          if (dbUser && dbUser.role) {
+            token.role = dbUser.role;
+          }
+          token.email = user.email;
+        }
+        return token;
+      } catch (err) {
+        console.error('jwt callback error', err);
+        return token;
+      }
+    },
+
+    // session callback: populate session from token
+    async session({ session, token }: { session: Session; token: any }) {
+      try {
+        if (token?.sub) session.user.id = token.sub;
+        if (token?.role) session.user.role = token.role;
+        if (!session.user.role && token?.email) {
+          await dbConnect();
+          const sessionUser = await User.findOne({ email: token.email });
+          if (sessionUser) session.user.role = sessionUser.role;
         }
       } catch (err) {
         console.error('session callback error', err);
       }
       return session;
     },
+
     async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: { email?: string } }) {
       try {
         const target = url?.startsWith('/') ? `${baseUrl}${url}` : url;
