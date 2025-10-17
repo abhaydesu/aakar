@@ -4,6 +4,7 @@ export interface IUser extends Document {
   email: string;
   name: string;
   image?: string;
+  role?: 'user' | 'recruiter';
 }
 
 const UserSchema = new Schema<IUser>({
@@ -19,6 +20,10 @@ const UserSchema = new Schema<IUser>({
   image: {
     type: String,
   },
+  role: {
+    type: String,
+    enum: ['user', 'recruiter'],
+  }
 });
 
 const User = models.User || model<IUser>('User', UserSchema);

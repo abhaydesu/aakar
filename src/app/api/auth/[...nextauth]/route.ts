@@ -1,7 +1,11 @@
+// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions, Profile, Session } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import User from '@/models/User';
 import dbConnect from '@/lib/mongodb';
+import User from '@/models/User';
+
+const isProd = process.env.NODE_ENV === 'production';
+const useSecureCookies = isProd;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,46 +14,70 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  callbacks: {
-    async session({ session }: { session: Session }): Promise<Session> {
-      await dbConnect();
-      const sessionUser = await User.findOne({ email: session.user?.email });
-      
-      if (session.user && sessionUser) {
-        session.user.id = sessionUser._id.toString();
-      }
-      
-      return session;
+  pages: { signIn: '/signin' },
+  debug: false,
+  session: { strategy: 'jwt' },
+  secret: process.env.NEXTAUTH_SECRET!,
+  cookies: {
+    sessionToken: {
+      name: useSecureCookies ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: useSecureCookies },
     },
-    async signIn({ profile }: { profile?: Profile }): Promise<boolean> {
-      if (!profile) {
-        return false;
-      }
-      
+  },
+  callbacks: {
+    async signIn({ profile }: { profile?: Profile }) {
+      if (!profile || !profile.email) return false;
       try {
         await dbConnect();
-
-        const userExists = await User.findOne({ email: profile.email });
-
-        if (!userExists) {
+        let dbUser = await User.findOne({ email: profile.email });
+        if (!dbUser) {
           await User.create({
             email: profile.email,
-            name: profile.name,
+            name: profile.name || profile.email.split('@')[0],
             image: profile.image,
           });
         }
-
+        // always allow sign in (return true) — redirection handled in redirect callback
         return true;
-      } catch (error) {
-        if (error instanceof Error) {
-            console.log("Error checking if user exists: ", error.message);
-        }
+      } catch (e) {
+        console.error('signIn callback error', e);
         return false;
       }
+    },
+    async session({ session }: { session: Session }) {
+      try {
+        await dbConnect();
+        const sessionUser = await User.findOne({ email: session.user?.email });
+        if (session.user && sessionUser) {
+          session.user.id = sessionUser._id.toString();
+          session.user.role = sessionUser.role;
+        }
+      } catch (e) {
+        console.error('session callback error', e);
+      }
+      return session;
+    },
+    async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: any }) {
+      try {
+        // If NextAuth asked to redirect to a relative path, normalize it
+        const target = url?.startsWith('/') ? `${baseUrl}${url}` : url;
+        // If user exists in DB but has no role, send to /select-role
+        if (user?.email) {
+          await dbConnect();
+          const dbUser = await User.findOne({ email: user.email });
+          if (dbUser && !dbUser.role) {
+            return `${baseUrl}/select-role`;
+          }
+        }
+        // Otherwise respect requested redirect or fallback to baseUrl
+        if (target) return target;
+      } catch (e) {
+        console.error('redirect callback error', e);
+      }
+      return baseUrl;
     },
   },
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

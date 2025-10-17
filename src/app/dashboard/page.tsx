@@ -28,13 +28,20 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/signin');
+      return;
     }
     
     if (status === 'authenticated') {
+      if (!session?.user?.role) {
+        router.push('/select-role');
+        return;
+      }
+
       const fetchCredentials = async () => {
         setIsLoading(true);
         try {
-          const res = await fetch('/api/credentials');
+          const res = await fetch('/api/credentials', { credentials: 'include' });
+          if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
           const data: ApiCredential[] = await res.json();
           setCredentials(data.map(({ _id, ...rest }) => ({ ...rest, id: _id })));
         } catch (error) {
@@ -46,28 +53,32 @@ export default function DashboardPage() {
       };
       fetchCredentials();
     }
-  }, [status, router]);
-  
+  }, [status, router, session]);
+
   useEffect(() => {
     const verifyingCredentials = credentials.filter(c => c.status === 'Verifying');
     if (verifyingCredentials.length > 0) {
       verifyingCredentials.forEach(cred => {
         setTimeout(async () => {
-          // Simulate verification logic
-          const isVerifiable = cred.issuer.toLowerCase().includes('coursera') || cred.issuer.toLowerCase().includes('nptel');
-          const finalStatus: CredentialStatus = isVerifiable ? 'Verified' : 'VerificationFailed';
+          try {
+            const isVerifiable = cred.issuer.toLowerCase().includes('coursera') || cred.issuer.toLowerCase().includes('nptel');
+            const finalStatus: CredentialStatus = isVerifiable ? 'Verified' : 'VerificationFailed';
 
-          const res = await fetch('/api/credentials', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: cred.id, status: finalStatus }),
-          });
-          if (res.ok) {
-            const updatedCred: ApiCredential = await res.json();
-            setCredentials(prev => prev.map(c => c.id === cred.id ? { ...c, status: updatedCred.status } : c));
-            toast.success(`Verification for '${cred.title}' complete.`);
+            const res = await fetch('/api/credentials', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ id: cred.id, status: finalStatus }),
+            });
+            if (res.ok) {
+              const updatedCred: ApiCredential = await res.json();
+              setCredentials(prev => prev.map(c => c.id === cred.id ? { ...c, status: updatedCred.status } : c));
+              toast.success(`Verification for '${cred.title}' complete.`);
+            }
+          } catch (e) {
+            console.error('Verification PATCH failed', e);
           }
-        }, 7000); // Increased delay to let animation play
+        }, 7000);
       });
     }
   }, [credentials]);
@@ -75,6 +86,7 @@ export default function DashboardPage() {
   const handleAddCredential = async (formData: FormData) => {
     const res = await fetch('/api/credentials', {
       method: 'POST',
+      credentials: 'include',
       body: formData,
     });
     if (res.ok) {
@@ -87,7 +99,6 @@ export default function DashboardPage() {
   };
 
   const handleDeleteCredential = async (id: string) => {
-    // Optimistically remove from UI
     const originalCredentials = credentials;
     setCredentials(prev => prev.filter(cred => cred.id !== id));
     toast.success('Credential deleted.');
@@ -95,12 +106,13 @@ export default function DashboardPage() {
     const res = await fetch('/api/credentials', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ id }),
     });
 
     if (!res.ok) {
       toast.error('Could not delete from server.');
-      setCredentials(originalCredentials); // Revert on failure
+      setCredentials(originalCredentials);
     }
   };
 
@@ -125,7 +137,6 @@ export default function DashboardPage() {
     filteredBySearch.forEach(cred => {
       if (cred.group) {
         if (!uniqueCredentials.has(cred.group)) {
-          // Show the first credential in a group as the representative
           uniqueCredentials.set(cred.group, { ...cred, title: `Group: ${cred.title} & others` });
         }
       } else {

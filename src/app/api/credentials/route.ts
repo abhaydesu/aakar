@@ -1,12 +1,10 @@
-import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
+import { getCurrentUserSession } from '@/lib/auth';
 import dbConnect from '@/lib/mongodb';
 import Credential from '@/models/Credential';
-import { authOptions } from '../auth/[...nextauth]/route';
 
-// GET: Fetch all credentials for the logged-in user
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await getCurrentUserSession();
   if (!session?.user?.id) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
@@ -19,36 +17,23 @@ export async function GET() {
   }
 }
 
-// POST: Create a new credential (with added debugging)
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getCurrentUserSession();
   if (!session?.user?.id) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const formData = await request.formData();
-    
-    // --- Start Debugging Logs ---
-    console.log("Server received request to create credential.");
-    console.log("Form data keys received:", Array.from(formData.keys()));
-
     const file = formData.get('certificate') as File | null;
 
     if (!file || file.size === 0) {
-      console.error("Validation failed: 'certificate' file is missing or empty.");
       return NextResponse.json({ message: 'File is required and cannot be empty.' }, { status: 400 });
     }
 
-    console.log("File details:", { name: file.name, type: file.type, size: file.size });
-    // --- End Debugging Logs ---
-
-    // Convert file to Base64 string
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Data = buffer.toString('base64');
-
-    console.log("File converted to Base64 string. Length:", base64Data.length);
 
     const newCredentialData = {
       userId: session.user.id,
@@ -64,18 +49,15 @@ export async function POST(request: Request) {
     const credential = new Credential(newCredentialData);
     await credential.save();
 
-    console.log("Credential saved to database successfully. ID:", credential._id);
     return NextResponse.json(credential, { status: 201 });
 
   } catch (error) {
-    console.error("Error in POST /api/credentials:", error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// PATCH: Update a credential's status
 export async function PATCH(request: Request) {
-    const session = await getServerSession(authOptions);
+    const session = await getCurrentUserSession();
     if (!session?.user?.id) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
@@ -97,10 +79,10 @@ export async function PATCH(request: Request) {
     } catch (error) {
       return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
-  }
+}
 
 export async function DELETE(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getCurrentUserSession();
   if (!session?.user?.id) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
