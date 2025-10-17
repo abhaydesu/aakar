@@ -4,6 +4,7 @@ import Credential from '@/models/Credential';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import CopyProfileLinkButton from '../../components/CopyProfileLinkButton';
+import OnboardingBanner from '../../components/OnboardingBanner'; // <-- Import the new banner
 
 type Props = { params: { id: string } };
 
@@ -37,20 +38,24 @@ export default async function PublicProfilePage({ params }: Props) {
 
   let user: IUserLean | null = null;
 
+  // Try by ObjectId
   if (/^[0-9a-fA-F]{24}$/.test(rawId)) {
     user = (await User.findById(rawId).select('name image email role slug').lean()) as IUserLean | null;
   }
 
+  // Try by slug
   if (!user) {
     user = (await User.findOne({ slug: rawId }).select('name image email role slug').lean()) as IUserLean | null;
   }
 
+  // Try by name (hyphens -> spaces)
   if (!user) {
     const maybeName = rawId.replace(/-/g, ' ');
     const nameRegex = new RegExp(`^${escapeRegExp(maybeName)}$`, 'i');
     user = (await User.findOne({ name: nameRegex }).select('name image email role slug').lean()) as IUserLean | null;
   }
 
+  // Try by email
   if (!user && rawId.includes('@')) {
     user = (await User.findOne({ email: rawId }).select('name image email role slug').lean()) as IUserLean | null;
   }
@@ -60,12 +65,18 @@ export default async function PublicProfilePage({ params }: Props) {
   const creds = (await Credential.find({ userId: String(user._id) }).sort({ date: -1 }).lean()) as ICred[];
 
   return (
-    <main className="bg-[#f9f0eb] min-h-screen text-neutral-900 py-12">
+    <main className="bg-[#f9f0eb] min-h-screen text-neutral-900 py-12 pt-30">
       <div className="max-w-5xl mx-auto px-6">
         <section className="bg-white rounded-2xl p-8 shadow-sm flex flex-col md:flex-row gap-6 items-center">
           <div className="w-28 h-28 rounded-full overflow-hidden bg-neutral-100 flex items-center justify-center">
             {user.image ? (
-              <Image src={String(user.image)} alt={user.name ?? 'User'} width={112} height={112} className="object-cover" />
+              <Image
+                src={String(user.image)}
+                alt={user.name ?? 'User'}
+                width={112}
+                height={112}
+                className="object-cover"
+              />
             ) : (
               <div className="text-3xl font-bold text-green-800">{(user.name ?? 'U')[0]}</div>
             )}
@@ -74,8 +85,8 @@ export default async function PublicProfilePage({ params }: Props) {
           <div className="flex-1">
             <h1 className="text-2xl md:text-3xl font-extrabold text-neutral-900">{user.name}</h1>
             <p className="mt-1 text-sm text-neutral-600">{user.email}</p>
-            <div className="mt-3 inline-flex items-center gap-2">
-              <span className="text-xs px-3 py-1 rounded-full bg-neutral-100 text-neutral-800">{user.role ?? 'Learner'}</span>
+            <div className="mt-3 inline-flex items-center gap-4">
+              <span className="text-sm px-3 py-1 rounded-lg bg-green-50 text-green-800">{user.role ?? 'Learner'}</span>
               <CopyProfileLinkButton />
             </div>
           </div>
@@ -111,7 +122,7 @@ export default async function PublicProfilePage({ params }: Props) {
                           target="_blank"
                           rel="noopener noreferrer"
                           download={`certificate-${String(c.title ?? 'cert').replace(/\s+/g, '_')}`}
-                          className="inline-flex items-center text-sm px-3 py-2 rounded-md bg-green-800 text-white"
+                          className="inline-flex items-center text-sm px-3 py-2 rounded-md bg-green-800 hover:bg-green-700 text-white"
                         >
                           View
                         </a>
@@ -126,22 +137,11 @@ export default async function PublicProfilePage({ params }: Props) {
           )}
         </section>
 
-        <section className="mt-10 bg-white rounded-2xl p-6 shadow-sm text-neutral-700">
-          <h3 className="font-semibold mb-2">About Aakar</h3>
-          <p className="text-sm">
-            Aakar aggregates micro-credentials so learners can collect, verify and showcase short-term learning achievements.
-            Visit Aakar to learn more or to request a verified transcript.
-          </p>
-
-          <div className="mt-4 flex items-center gap-4">
-            <Image src="/logo2.png" width={48} height={48} alt="Aakar" />
-            <div className="text-sm">
-              <div className="font-semibold">Aakar</div>
-              <div className="text-xs text-neutral-500">Micro-credential aggregator</div>
-            </div>
-          </div>
-        </section>
+        {/* The old 'About Aakar' section is now removed */}
       </div>
+
+      {/* The new onboarding banner is added here */}
+      <OnboardingBanner />
     </main>
   );
 }
