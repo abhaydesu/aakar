@@ -1,4 +1,10 @@
+"use client";
+
+import { useEffect, useRef, useState } from 'react';
 import { FiPlus, FiSearch } from 'react-icons/fi';
+import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
+import { Link as LinkIcon } from 'lucide-react';
 
 type DashboardControlsProps = {
   searchQuery: string;
@@ -15,15 +21,72 @@ export const DashboardControls = ({
   onGroupToggle,
   onAddClick,
 }: DashboardControlsProps) => {
+  const { data: session, status } = useSession();
+  const [slug, setSlug] = useState<string>('');
+  const [isLoadingSlug, setIsLoadingSlug] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchSlug = async () => {
+      if (status !== 'authenticated') return;
+      setIsLoadingSlug(true);
+      try {
+        const res = await fetch('/api/user/slug');
+        if (res.ok) {
+          const data = await res.json().catch(() => ({} as { slug?: string | null }));
+          if (mounted && data?.slug) setSlug(String(data.slug));
+        }
+      } catch (err) {
+        console.error('Failed to fetch slug:', err);
+      } finally {
+        if (mounted) setIsLoadingSlug(false);
+      }
+    };
+    fetchSlug();
+    return () => {
+      mounted = false;
+      if (copyTimeoutRef.current) window.clearTimeout(copyTimeoutRef.current);
+    };
+  }, [status]);
   return (
     <>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-6">
         <div>
-          <h1 className="text-4xl md:text-4xl font-extrabold text-neutral-900">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
-              My Skill Portfolio
-            </span>
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-4xl md:text-4xl font-extrabold text-neutral-900">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-700">
+                My Skill Portfolio
+              </span>
+            </h1>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const idToCopy = slug;
+                  if (!idToCopy) return;
+                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                    void navigator.clipboard.writeText(`${location.origin}/profile/${idToCopy}`).then(() => {
+                      setCopied(true);
+                      toast.success('Public link copied');
+                      if (copyTimeoutRef.current) window.clearTimeout(copyTimeoutRef.current);
+                      copyTimeoutRef.current = window.setTimeout(() => setCopied(false), 1500);
+                    });
+                  }
+                }}
+                disabled={!slug || isLoadingSlug}
+                aria-label="Copy public profile link"
+                className="p-1 rounded-md bg-green-50 text-green-700 hover:bg-green-100 active:translate-y-0.5 active:scale-95 transition-transform duration-100"
+              >
+                <LinkIcon size={18} />
+              </button>
+
+              <span aria-live="polite" className={`text-sm font-medium text-green-700 transition-opacity duration-200 ${copied ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'}`}>
+                {copied ? 'Copied!' : ''}
+              </span>
+            </div>
+          </div>
           <p className="text-sm text-neutral-600 mt-1">
             A unified view of all your micro-credentials.
           </p>

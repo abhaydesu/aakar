@@ -50,3 +50,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    await dbConnect();
+    const dbUser = (await User.findById(session.user.id).select('slug').lean()) as DbUserSlug;
+    if (!dbUser) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ slug: dbUser.slug ?? null }, { status: 200 });
+  } catch (err) {
+    console.error('GET /api/user/slug error', err);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+}

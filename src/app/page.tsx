@@ -102,7 +102,7 @@ export default function LandingPage() {
               </ul>
 
               <div className="mt-6">
-                <Link className="inline-block py-3 px-5 rounded-lg border-2 border-neutral-900 font-medium hover:bg-neutral-900 hover:text-white transition" href="/employer">
+                <Link className="inline-block py-3 px-5 rounded-lg border-2 border-neutral-900 font-medium hover:bg-neutral-900 hover:text-white transition" href="/recruiter-dashboard">
                   Employer access
                 </Link>
               </div>
