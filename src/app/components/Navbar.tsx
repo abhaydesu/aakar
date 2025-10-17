@@ -30,7 +30,6 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    let iv: number | undefined;
     const fetchUnread = async () => {
       if (!session?.user?.id) {
         setUnreadCount(0);
@@ -50,9 +49,9 @@ export const Navbar = () => {
     };
 
     fetchUnread();
-    iv = window.setInterval(fetchUnread, 5000);
+    const iv = window.setInterval(fetchUnread, 5000);
     return () => {
-      if (iv) window.clearInterval(iv);
+      window.clearInterval(iv);
     };
   }, [session?.user?.id]);
 
