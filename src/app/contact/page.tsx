@@ -1,3 +1,4 @@
+// src/app/contact/page.tsx
 "use client";
 
 import React from "react";
@@ -109,18 +110,15 @@ export default function Contact() {
   );
 }
 
-/* ----------------------------- TeamGrid & helpers ----------------------------- */
-
 function TeamGrid({ members }: { members: { name: string; github: string }[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {members.map((m, i) => (
+      {members.map((m) => (
         <motion.button
           key={m.name}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="w-full text-left flex items-center gap-3 bg-[#f9f0eb] border border-neutral-200 rounded-lg p-3 hover:shadow-sm focus:outline-none"
-          // TODO: replace with Link to profile or social URLs when available
           onClick={() => {}}
           aria-label={`Open profile for ${m.name}`}
         >
@@ -130,7 +128,7 @@ function TeamGrid({ members }: { members: { name: string; github: string }[] }) 
 
           <div className="flex-1">
             <Link href={m.github} >
-            <div className="text-sm font-semibold">{m.name}</div>
+              <div className="text-sm font-semibold">{m.name}</div>
             </Link>
           </div>
         </motion.button>

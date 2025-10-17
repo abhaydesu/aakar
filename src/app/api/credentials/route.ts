@@ -1,3 +1,4 @@
+// src/app/api/credentials/route.ts
 import { NextResponse } from 'next/server';
 import { getCurrentUserSession } from '@/lib/auth';
 import dbConnect from '@/lib/mongodb';
@@ -12,7 +13,8 @@ export async function GET() {
     await dbConnect();
     const credentials = await Credential.find({ userId: session.user.id }).sort({ createdAt: -1 });
     return NextResponse.json(credentials);
-  } catch (error) {
+  } catch (err) {
+    console.error('GET /api/credentials error', err);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -51,34 +53,36 @@ export async function POST(request: Request) {
 
     return NextResponse.json(credential, { status: 201 });
 
-  } catch (error) {
+  } catch (err) {
+    console.error('POST /api/credentials error', err);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
-    const session = await getCurrentUserSession();
-    if (!session?.user?.id) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  const session = await getCurrentUserSession();
+  if (!session?.user?.id) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { id, status } = await request.json();
+    await dbConnect();
+    const updatedCredential = await Credential.findOneAndUpdate(
+      { _id: id, userId: session.user.id },
+      { status },
+      { new: true }
+    );
+
+    if (!updatedCredential) {
+      return NextResponse.json({ message: 'Credential not found or unauthorized' }, { status: 404 });
     }
-  
-    try {
-      const { id, status } = await request.json();
-      await dbConnect();
-      const updatedCredential = await Credential.findOneAndUpdate(
-        { _id: id, userId: session.user.id },
-        { status },
-        { new: true }
-      );
-  
-      if (!updatedCredential) {
-        return NextResponse.json({ message: 'Credential not found or unauthorized' }, { status: 404 });
-      }
-  
-      return NextResponse.json(updatedCredential);
-    } catch (error) {
-      return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-    }
+
+    return NextResponse.json(updatedCredential);
+  } catch (err) {
+    console.error('PATCH /api/credentials error', err);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
 export async function DELETE(request: Request) {
@@ -98,7 +102,8 @@ export async function DELETE(request: Request) {
     }
 
     return NextResponse.json({ message: 'Credential deleted successfully' }, { status: 200 });
-  } catch (error) {
+  } catch (err) {
+    console.error('DELETE /api/credentials error', err);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }

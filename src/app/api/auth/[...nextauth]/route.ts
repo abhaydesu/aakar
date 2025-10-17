@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
       if (!profile || !profile.email) return false;
       try {
         await dbConnect();
-        let dbUser = await User.findOne({ email: profile.email });
+        const dbUser = await User.findOne({ email: profile.email });
         if (!dbUser) {
           await User.create({
             email: profile.email,
@@ -37,10 +37,9 @@ export const authOptions: NextAuthOptions = {
             image: profile.image,
           });
         }
-        // always allow sign in (return true) — redirection handled in redirect callback
         return true;
-      } catch (e) {
-        console.error('signIn callback error', e);
+      } catch (err) {
+        console.error('signIn callback error', err);
         return false;
       }
     },
@@ -52,16 +51,14 @@ export const authOptions: NextAuthOptions = {
           session.user.id = sessionUser._id.toString();
           session.user.role = sessionUser.role;
         }
-      } catch (e) {
-        console.error('session callback error', e);
+      } catch (err) {
+        console.error('session callback error', err);
       }
       return session;
     },
-    async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: any }) {
+    async redirect({ url, baseUrl, user }: { url: string; baseUrl: string; user?: { email?: string } }) {
       try {
-        // If NextAuth asked to redirect to a relative path, normalize it
         const target = url?.startsWith('/') ? `${baseUrl}${url}` : url;
-        // If user exists in DB but has no role, send to /select-role
         if (user?.email) {
           await dbConnect();
           const dbUser = await User.findOne({ email: user.email });
@@ -69,10 +66,9 @@ export const authOptions: NextAuthOptions = {
             return `${baseUrl}/select-role`;
           }
         }
-        // Otherwise respect requested redirect or fallback to baseUrl
         if (target) return target;
-      } catch (e) {
-        console.error('redirect callback error', e);
+      } catch (err) {
+        console.error('redirect callback error', err);
       }
       return baseUrl;
     },

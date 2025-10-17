@@ -23,7 +23,6 @@ export default function SelectRolePage() {
 
   const handleRoleSelection = async (role: 'user' | 'recruiter') => {
     if (isLoading) return;
-    // guard if session already has role (extra safety)
     if (session?.user?.role) {
       router.push(session.user.role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
       return;
@@ -40,8 +39,7 @@ export default function SelectRolePage() {
 
       if (res.ok) {
         localStorage.setItem('aakar_role', role);
-        // update client session immediately so navbar reflects change and prevents re-entry
-        try { await update({ ...session, user: { ...session?.user, role } }); } catch (e) { /* ignore update error */ }
+        try { await update({ ...session, user: { ...session?.user, role } }); } catch {}
         toast.success('Role saved successfully!');
         router.push(role === 'recruiter' ? '/recruiter-dashboard' : '/dashboard');
       } else {

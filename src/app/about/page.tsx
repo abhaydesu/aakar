@@ -1,20 +1,15 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Navbar } from "../components/Navbar";
+// src/app/about/page.tsx
+import React from 'react';
 
 export default function AboutPage() {
   return (
     <div className="bg-[#f9f0eb] text-neutral-900 min-h-screen">
-
       <main className="max-w-6xl mx-auto px-6 py-12">
         <section className=" bg-white rounded-xl p-10 gap-8 items-center mb-12">
           <div className="">
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">About Aakar</h1>
             <p className="text-lg text-neutral-700 mb-6">
-              Aakar is a Micro‑Credential Aggregator Platform designed to help learners collect, verify, and showcase
+              Aakar is a Micro-Credential Aggregator Platform designed to help learners collect, verify, and showcase
               short-term learning achievements from multiple providers in a single, trusted digital portfolio.
             </p>
 
@@ -24,9 +19,9 @@ export default function AboutPage() {
               create a reliable skills record for learners, employers, and policymakers.
             </p>
 
-            <Link className="inline-block mt-4 py-3 px-5 rounded-lg bg-neutral-900 text-white font-semibold hover:scale-[1.02] transition" href="/contact">
+            <a className="inline-block mt-4 py-3 px-5 rounded-lg bg-neutral-900 text-white font-semibold hover:scale-[1.02] transition" href="/contact">
               Contact us
-            </Link>
+            </a>
           </div>
         </section>
 
@@ -73,21 +68,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-4">Tech & architecture</h2>
-          <p className="text-neutral-700 mb-4">We follow a pragmatic, modular architecture to enable scale and trust.</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <TechCard title="Frontend" items={["Next.js", "Tailwind CSS", "Accessible UI"]} />
-            <TechCard title="Backend" items={["FastAPI / Express", "PostgreSQL + Redis", "REST + OpenAPI"]} />
-            <TechCard title="AI & Search" items={["Sentence-Transformers", "FAISS / Pinecone", "Skill Tagging"]} />
-          </div>
-        </section>
-
-                <section className="mb-12 bg-gradient-to-r from-green-900 via-green-700 to-green-900 text-white rounded-2xl p-8 text-center">
+        <section className="mb-12 bg-gradient-to-r from-green-900 via-green-700 to-green-900 text-white rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-bold mb-2">Join our mission</h3>
           <p className="mb-4">Partner with us — whether you&apos;re a learning provider, employer, or policymaker.</p>
-          <Link className="inline-block py-3 px-6 rounded-lg bg-white text-green-900 font-semibold" href="/contact">Get in touch</Link>
+          <a className="inline-block py-3 px-6 rounded-lg bg-white text-green-900 font-semibold" href="/contact">Get in touch</a>
         </section>
 
       </main>
@@ -96,7 +80,6 @@ export default function AboutPage() {
   );
 }
 
-/* --------------------------- small helper components --------------------------- */
 function StatCard({ title, value }: { title: string; value: string }) {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm">
@@ -141,4 +124,3 @@ function TechCard({ title, items }: { title: string; items: string[] }) {
     </div>
   );
 }
-

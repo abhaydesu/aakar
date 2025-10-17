@@ -1,6 +1,7 @@
+// src/app/components/dashboard/CredentialCard.tsx
+import React, { useEffect, useState } from "react";
 import { FiCheckCircle, FiClock, FiUser, FiTrash2, FiExternalLink, FiLoader, FiShield, FiXCircle } from "react-icons/fi";
 import { Credential, CredentialStatus } from "@/types";
-import { useState, useEffect } from "react";
 
 const StatusBadge = ({ status }: { status: CredentialStatus }) => {
   const styles: Record<CredentialStatus, string> = {
