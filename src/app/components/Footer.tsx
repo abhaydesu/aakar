@@ -22,10 +22,10 @@ export function Footer() {
 
         <div>
           <h5 className="font-semibold mb-3">Product</h5>
-          <ul className="space-y-2 text-sm text-neutral-300">
-            <li><Link href="/dashboard">Dashboard</Link></li>
-            <li><Link href="/about">How it works</Link></li>
-            <li><Link href="/dashboard">Employer access</Link></li>
+          <ul className="space-y-2 text-sm text-neutral-300 ">
+            <li><Link className="hover:text-neutral-100" href="/dashboard">Dashboard</Link></li>
+            <li><Link className="hover:text-neutral-100" href="/about">How it works</Link></li>
+            <li><Link className="hover:text-neutral-100" href="/dashboard">Employer access</Link></li>
           </ul>
         </div>
 

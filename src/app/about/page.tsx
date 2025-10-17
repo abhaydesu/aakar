@@ -55,7 +55,7 @@ export default function AboutPage() {
           <p className="text-neutral-700 mb-6">Core contributors building Aakar for SIH25202.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <TeamMember name="Kushagra Shukla" role="Team Leader/Full Stack Developer"  />
+            <TeamMember name="Kushagra Shukla" role="Full Stack Developer"  />
             <TeamMember name="Abhay Singh" role="Full Stack Developer"/>
             <TeamMember name="Angelica Singh" role="Frontend Developer"/>
             <TeamMember name="Aditya" role="Backend Developer" />

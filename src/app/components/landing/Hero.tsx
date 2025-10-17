@@ -22,26 +22,80 @@ export const Hero = () => {
 
         <div className="flex flex-col items-center gap-6 w-full">
           <div className="gap-6 flex flex-row justify-center items-center w-full">
-            <Link href="/dashboard">
-              <button
-                className="w-full sm:w-auto relative cursor-pointer py-2 px-3 md:py-4 md:px-6 rounded-sm bg-neutral-900 text-[#f9f0eb] font-semibold
-                         border-4 border-transparent transition-all duration-180 transform-gpu will-change-transform
-                         hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
-                aria-label="Get started"
-              >
-                <span className="absolute inset-0 rounded-xl pointer-events-none" />
-                <span className="relative z-10">Get started</span>
-              </button>
-            </Link>
+            {/* --- Primary Button: "Aurora" Style --- */}
+{/* --- Primary Button: "Shine & Gradient Shift" Style --- */}
+<Link href="/dashboard" aria-label="Get started">
+  <button
+    className="group relative inline-flex items-center justify-center gap-2 overflow-hidden cursor-pointer
+               py-3 px-6 rounded-lg bg-gradient-to-br from-green-700 to-green-900
+               text-white font-semibold text-lg shadow-lg
+               transition-all duration-300 ease-out
+               "
+  >
+    <span 
+      className="absolute inset-0 w-full h-full transform translate-x-full 
+                 bg-gradient-to-r from-transparent via-white/40 to-transparent 
+                 group-hover:-translate-x-full transition-transform duration-700 ease-out"
+    />
+    <span 
+      className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-800 to-green-600 
+                 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    />
+    
+    <span className="relative z-10 flex items-center gap-2">
+      Get started
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 20 20" 
+        fill="currentColor" 
+        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+      >
+        <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+      </svg>
+    </span>
+  </button>
+</Link>
 
-            <button
-              className="relative cursor-pointer py-2 px-3 md:py-4 md:px-6 rounded-sm bg-green-800 text-neutral-900 font-medium
-                         border-4 border-transparent transition-colors duration-180 transform-gpu will-change-transform
-                         hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-green-800"
-              aria-label="Watch demo"
-            >
-              <span className="relative z-10 text-neutral-100">Watch Demo</span>
-            </button>
+<Link target="_blank" href="https://youtu.be/fM4Vzcqg9L0" aria-label="Watch Demo">
+<button
+  className="group relative inline-flex items-center justify-center cursor-pointer overflow-hidden
+             py-2.5 px-6 rounded-lg bg-white
+             text-green-800 font-semibold text-lg border-2 border-green-800
+             transition-colors duration-300 ease-out
+             active:translate-y-px"
+  aria-label="Watch demo"
+>
+  {/* This span creates the background fill effect. 
+    It starts with a width of 0 (scale-x-0) and expands to full width on hover.
+  */}
+  <span
+    className="absolute inset-0 z-0 h-full w-full bg-[#ffdeb8]
+               transform scale-x-0 transition-transform duration-300 ease-in-out
+               origin-left group-hover:scale-x-100"
+  />
+
+  {/* This span holds the content (icon + text).
+    It moves as a single unit and changes color on hover.
+  */}
+  <span
+    className="relative z-10 flex items-center gap-2
+               transition-all duration-300 ease-in-out
+               group-hover:translate-x-1 group-hover:text-green-800"
+  >
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 20 20" 
+      fill="currentColor" 
+      className="w-5 h-5"
+    >
+      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+    </svg>
+    <span>
+      Watch Demo
+    </span>
+  </span>
+</button>
+</Link>
           </div>
 
           <div className="mt-1 text-sm text-neutral-600 flex items-center gap-3">
