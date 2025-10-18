@@ -51,18 +51,31 @@ export default function AboutPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-4">Team HEXADECIMAL</h2>
-          <p className="text-neutral-700 mb-6">Core contributors building Aakar for SIH25202.</p>
+  <h2 className="text-3xl font-bold mb-4">Team Hexadecimal</h2>
+  <p className="text-neutral-700 mb-6">Core contributors building Aakar for SIH25202.</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <TeamMember name="Kushagra Shukla" role="Full Stack Developer"  />
-            <TeamMember name="Abhay Singh" role="Full Stack Developer"/>
-            <TeamMember name="Angelica Singh" role="Frontend Developer"/>
-            <TeamMember name="Aditya" role="Backend Developer" />
-            <TeamMember name="Abhimanyu Dutta" role="Python Developer"/>
-            <TeamMember name="Prajakta Naik" role="DevOps" />
-          </div>
-        </section>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {[
+      { name: "Kushagra Shukla", role: "Full Stack Developer", github: "https://github.com/kushu30" },
+      { name: "Abhay Singh", role: "Full Stack Developer", github: "https://github.com/abhaydesu" },
+      { name: "Angelica Singh", role: "Frontend Developer", github: "https://github.com/angelica-singh-04" },
+      { name: "Aditya", role: "Backend Developer", github: "https://github.com/aditzz073" },
+      { name: "Abhimanyu Dutta", role: "Python Developer", github: "https://github.com/Caravaleer" },
+      { name: "Prajakta Naik", role: "DevOps", github: "https://github.com/prajaktanaik17" },
+    ].map((member) => (
+      <a
+        key={member.name}
+        href={member.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="transition-transform duration-200 hover:scale-105"
+      >
+        <TeamMember name={member.name} role={member.role} />
+      </a>
+    ))}
+  </div>
+</section>
+
 
         <section className="mb-12 bg-gradient-to-r from-green-900 via-green-700 to-green-900 text-white rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-bold mb-2">Join our mission</h3>

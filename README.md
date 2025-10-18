@@ -47,7 +47,7 @@ It bridges the gap between learners and recruiters by providing transparent, ver
 
 ---
 
-## Team HEXADECIMAL
+## Team Hexadecimal
 
 | Name | GitHub | LinkedIn |
 |:------|:--------|:-----------|

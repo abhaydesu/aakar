@@ -9,9 +9,9 @@ const TEAM = [
   { name: "Kushagra Shukla", github: "https://github.com/kushu30" },
   { name: "Abhay Singh", github: "https://github.com/abhaydesu" },
   { name: "Angelica Singh",  github: "https://github.com/angelica-singh-04" },
-  { name: "Aditya", github: "https://github.com/" },
+  { name: "Aditya", github: "https://github.com/aditzz073" },
   { name: "Abhimanyu Dutta", github: "https://github.com/Caravaleer" },
-  { name: "Prajakta Naik", github: "https://github.com/" },
+  { name: "Prajakta Naik", github: "https://github.com/prajaktanaik17" },
 ];
 
 export default function Contact() {
@@ -23,7 +23,7 @@ export default function Contact() {
             <div className="bg-white rounded-2xl p-6 shadow-md border border-white/10">
               <h2 className="text-2xl font-extrabold mb-2">Meet the team</h2>
               <p className="text-sm text-neutral-600 mb-6">
-                HEXADECIMAL — the minds building Aakar.
+                Team Hexadecimal — the minds building Aakar.
               </p>
 
               <div className="grid grid-cols-1 gap-4">
